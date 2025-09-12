@@ -5,6 +5,7 @@
   const btn = document.getElementById('themeToggle');
   const stored = localStorage.getItem(key);
   const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  const body = document.body;
 
   function apply(theme){
     if(theme === 'light'){ root.classList.add('light'); }
@@ -20,6 +21,10 @@
   });
 
   document.getElementById('year').textContent = new Date().getFullYear();
+  // Mark page as loaded for subtle entrance
+  window.addEventListener('DOMContentLoaded', ()=>{
+    body.classList.add('loaded');
+  });
 
   // Scroll reveal
   const io = new IntersectionObserver((entries)=>{
@@ -37,6 +42,35 @@
   }, {threshold: 0.12, rootMargin: '0px 0px -10% 0px'});
 
   document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
+
+
+  // --- Scroll progress bar ---
+  const progressEl = document.querySelector('.progress');
+  if(progressEl){
+    let ticking = false;
+    let max = 1;
+    const recalc = () => {
+      const scrollHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      const clientHeight = document.documentElement.clientHeight;
+      max = Math.max(1, scrollHeight - clientHeight);
+    };
+    const update = () => {
+      const y = window.scrollY || window.pageYOffset || 0;
+      const p = Math.min(1, Math.max(0, y / max));
+      progressEl.style.transform = `scaleX(${p})`;
+      ticking = false;
+    };
+    window.addEventListener('resize', ()=>{ recalc(); update(); });
+    window.addEventListener('orientationchange', ()=>{ recalc(); update(); });
+    window.addEventListener('scroll', ()=>{
+      if(!ticking){
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, {passive:true});
+    recalc();
+    update();
+  }
 
 
   // --- i18n (NO / EN) ---
