@@ -40,7 +40,7 @@ footer.site{border-top:1px solid var(--stroke);border-bottom:0;margin-top:32px;b
 .btn{border:1px solid var(--stroke);background:linear-gradient(var(--panel), var(--panel)) padding-box, linear-gradient(120deg, color-mix(in oklab, var(--brand) 30%, transparent), color-mix(in oklab, var(--sky) 25%, transparent)) border-box;color:var(--fg);height:var(--btn-h);padding:0 var(--btn-px);border-radius:var(--btn-r);line-height:1;cursor:pointer;box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:8px;transition:transform var(--dur-2) var(--ease-1), box-shadow var(--dur-2) var(--ease-1), background-color var(--dur-2) var(--ease-1), border-color var(--dur-2) var(--ease-1), filter var(--dur-2) var(--ease-1)}
 .btn:hover{transform:translateY(-2px) scale(1.02);filter:saturate(110%)}
 .btn:active{transform:translateY(0) scale(.99)}
-.btn.outline{background:transparent}
+.btn.outline{background:linear-gradient(var(--panel), var(--panel)) padding-box, linear-gradient(120deg, color-mix(in oklab, var(--brand) 30%, transparent), color-mix(in oklab, var(--sky) 25%, transparent)) border-box}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 
 .panel{position:relative;background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:16px;margin:12px 0;box-shadow:var(--shadow);transition:transform var(--dur-3) var(--ease-2), box-shadow var(--dur-3) var(--ease-2), border-color var(--dur-2) var(--ease-1)}
