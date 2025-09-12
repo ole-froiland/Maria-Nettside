@@ -18,6 +18,11 @@
 
   btn?.addEventListener('click', () => {
     const next = root.classList.contains('light') ? 'dark' : 'light';
+    // brief global transition for smoother theme toggle
+    if(!prefersReduced){
+      root.classList.add('theming');
+      setTimeout(()=> root.classList.remove('theming'), 380);
+    }
     apply(next);
   });
 
