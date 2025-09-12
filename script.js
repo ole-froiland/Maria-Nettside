@@ -312,7 +312,7 @@
     path.setAttribute('fill','none');
     path.setAttribute('stroke','var(--brand)');
     path.setAttribute('stroke-linecap','round');
-    path.setAttribute('stroke-width','1.5');
+    path.setAttribute('stroke-width','2');
     path.setAttribute('class','curve-path');
     svg.appendChild(path);
     document.body.appendChild(svg);
