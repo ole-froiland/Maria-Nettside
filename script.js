@@ -263,9 +263,13 @@
     const esc = s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
     const re = new RegExp(`(${words.map(esc).join('|')})`,'gi');
     let html = txt.replace(re, '<span class="em">$1</span>');
-    // Special highlight for 'min' (NO only)
+    // Special highlight for first 'min' (NO only) as anchor at the word's last letter 'n'
     if(currentLang === 'no'){
-      html = html.replace(/\bmin\b/g, '<span class="em em-min">min</span>');
+      let anchored = false;
+      html = html.replace(/\bmin\b/g, (m)=>{
+        if(!anchored){ anchored = true; return '<span id="min-anchor" class="em">min</span>'; }
+        return '<span class="em">min</span>';
+      });
     }
     el.innerHTML = html;
     // draw curve from 'min'
@@ -276,48 +280,48 @@
     if(prefersReduced) return;
     // remove previous curve
     document.querySelectorAll('.hero-curve').forEach(n=>n.remove());
-    const anchor = document.querySelector('.em-min');
+    const anchor = document.getElementById('min-anchor');
     if(!anchor) return;
-    const rect = anchor.getBoundingClientRect();
-    const startX = Math.round(rect.right);
-    const startY = Math.round(rect.top + rect.height * 0.65);
+    // Find precise rect of the last character 'n' in 'min'
+    const textNode = anchor.firstChild;
+    if(!(textNode && textNode.nodeType === 3)) return;
+    const t = textNode.textContent || '';
+    const nIdx = Math.max(0, t.length - 1);
+    const range = document.createRange();
+    range.setStart(textNode, nIdx);
+    range.setEnd(textNode, nIdx + 1);
+    const r = range.getClientRects()[0] || anchor.getBoundingClientRect();
+    const startX = Math.round(r.right);
+    const startY = Math.round(r.bottom - 1); // baseline-ish
     const vw = window.innerWidth; const vh = window.innerHeight;
     const midX = Math.round(vw * 0.5);
-    const endX = midX; const endY = vh;
-    const c1x = Math.round(startX + (midX - startX) * 0.35);
-    const c1y = Math.round(startY - vh * 0.06);
-    const c2x = Math.round(midX);
-    const c2y = Math.round(startY + vh * 0.28);
+    const endX = midX + Math.round(vw * 0.02);
+    const endY = vh + 40; // continue off-screen
+    // Elegant S-curve controls: move right/up slightly, then sweep through center and down
+    const c1x = startX + Math.round(vw * 0.08);
+    const c1y = startY - Math.round(vh * 0.10);
+    const c2x = midX - Math.round(vw * 0.05);
+    const c2y = startY + Math.round(vh * 0.22);
     const d = `M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('class','hero-curve');
-    svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+    svg.setAttribute('viewBox', `0 0 ${vw} ${vh+40}`);
     svg.setAttribute('width','100vw');
     svg.setAttribute('height','100vh');
-    const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-    const grad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
-    grad.setAttribute('id','curveGrad');
-    grad.setAttribute('x1','0'); grad.setAttribute('y1','0'); grad.setAttribute('x2','0'); grad.setAttribute('y2','1');
-    const stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
-    stop1.setAttribute('offset','0%'); stop1.setAttribute('stop-color','var(--brand)');
-    const stop2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
-    stop2.setAttribute('offset','100%'); stop2.setAttribute('stop-color','var(--sky)');
-    grad.appendChild(stop1); grad.appendChild(stop2); defs.appendChild(grad);
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d', d);
     path.setAttribute('fill','none');
-    path.setAttribute('stroke','url(#curveGrad)');
+    path.setAttribute('stroke','var(--brand)');
+    path.setAttribute('stroke-linecap','round');
     path.setAttribute('stroke-width','1.5');
-    path.setAttribute('pathLength','1');
-    path.setAttribute('stroke-dasharray','1');
-    path.setAttribute('stroke-dashoffset','1');
     path.setAttribute('class','curve-path');
-    svg.appendChild(defs); svg.appendChild(path);
+    svg.appendChild(path);
     document.body.appendChild(svg);
-    // trigger draw animation
-    requestAnimationFrame(()=>{
-      path.style.strokeDashoffset = '0';
-    });
+    // dash animation setup
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = String(len);
+    path.style.strokeDashoffset = String(len);
+    path.style.setProperty('--plen', String(len));
   }
 
   window.addEventListener('resize', ()=>{
