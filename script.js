@@ -172,6 +172,8 @@
     });
     localStorage.setItem(langKey, lang);
     langBtn.textContent = (lang === 'en') ? 'EN / NO' : 'NO / EN';
+    // retype hero after language change
+    typeHero();
   };
   applyLang(localStorage.getItem(langKey) || (navigator.language?.startsWith('en') ? 'en' : 'no'));
   langBtn?.addEventListener('click', ()=>{
@@ -240,6 +242,26 @@
       el.addEventListener('mouseleave', leave);
     });
   }
+
+  // --- Hero typewriter ---
+  function typeHero(){
+    const el = document.querySelector('.hero-type');
+    if(!el) return;
+    const full = el.textContent.trim();
+    if(!full) return;
+    if(prefersReduced){ el.textContent = full; el.classList.remove('typing'); return; }
+    el.textContent = '';
+    el.classList.add('typing');
+    let i = 0;
+    const step = ()=>{
+      el.textContent += full.charAt(i++);
+      if(i <= full.length) requestAnimationFrame(step);
+      else el.classList.remove('typing');
+    };
+    requestAnimationFrame(step);
+  }
+  // initial typing after DOM is ready and i18n applied
+  window.addEventListener('load', ()=>{ setTimeout(typeHero, 50); });
 
   // --- Contact popover ---
   (function(){
