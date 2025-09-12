@@ -229,7 +229,7 @@ h1:hover{background-position:200% 0}
 @media (prefers-reduced-motion: reduce){.chapter{transition:none}}
 
 /* --- Hero --- */
-.hero{position:relative;display:grid;grid-template-columns:1fr;align-items:center;min-height:68vh;margin:6px 0 10px;border-radius:18px;padding:clamp(16px, 4vw, 36px)}
+.hero{position:relative;display:grid;grid-template-columns:1fr;align-items:center;min-height:68vh;margin:6px 0 clamp(24px, 6vw, 64px);border-radius:18px;padding:clamp(16px, 4vw, 36px)}
 .hero .hero-title{font-size:clamp(2rem, 1.2rem + 3vw, 3rem);margin:0 0 .5rem}
 .hero .hero-type{max-width:68ch;color:var(--muted);font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);position:relative;line-height:1.6}
 .hero .hero-type.typing::after{content:"|";display:inline-block;margin-left:2px;opacity:.8;animation:blink .9s steps(1,end) infinite}
