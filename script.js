@@ -305,8 +305,7 @@
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('class','hero-curve');
     svg.setAttribute('viewBox', `0 0 ${vw} ${vh+40}`);
-    svg.setAttribute('width','100vw');
-    svg.setAttribute('height','100vh');
+    // sizing via CSS (fixed overlay) to avoid scroll-induced reflows
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d', d);
     path.setAttribute('fill','none');
