@@ -187,22 +187,6 @@
   });
 
   // --- Cinematic interactions ---
-  // Custom cursor follower (fine pointers, no reduced motion)
-  const cursor = document.querySelector('.cursor');
-  if(cursor && !prefersReduced && matchMedia('(pointer:fine)').matches){
-    let x = -100, y = -100, tx = x, ty = y;
-    const speed = 0.18;
-    const tick = ()=>{
-      tx += (x - tx) * speed;
-      ty += (y - ty) * speed;
-      cursor.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
-      requestAnimationFrame(tick);
-    };
-    window.addEventListener('pointermove', (e)=>{ x = e.clientX; y = e.clientY; }, {passive:true});
-    window.addEventListener('mouseenter', ()=>{ cursor.style.opacity = .9; });
-    window.addEventListener('mouseleave', ()=>{ cursor.style.opacity = 0; });
-    tick();
-  }
 
   // Magnetic buttons
   if(!prefersReduced && matchMedia('(pointer:fine)').matches){

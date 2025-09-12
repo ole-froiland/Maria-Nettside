@@ -211,10 +211,7 @@ html.theming .ambient{animation-play-state: paused}
 :root.light .ambient{opacity:.25;mix-blend-mode:multiply;filter:blur(40px) saturate(140%)}
 @media (prefers-reduced-motion: reduce){.ambient{animation:none;opacity:.22}}
 
-/* --- Custom cursor (fine pointers only) --- */
-.cursor{position:fixed;left:0;top:0;width:18px;height:18px;border:1px solid currentColor;border-radius:999px;pointer-events:none;z-index:200;opacity:.85;mix-blend-mode:difference;transform:translate3d(-100px,-100px,0);will-change:transform;transition:opacity .25s ease}
-@media (pointer: coarse){.cursor{display:none}}
-@media (prefers-reduced-motion: reduce){.cursor{display:none}}
+/* --- Custom cursor removed: using default system cursor --- */
 
 /* --- Typographic flourish --- */
 h1{
