@@ -42,6 +42,8 @@ footer.site{border-top:1px solid var(--stroke);border-bottom:0;margin-top:32px;b
 .btn:active{transform:translateY(0) scale(.99)}
 .btn.outline{background:linear-gradient(var(--panel), var(--panel)) padding-box, linear-gradient(120deg, color-mix(in oklab, var(--brand) 30%, transparent), color-mix(in oklab, var(--sky) 25%, transparent)) border-box}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
+/* anchor popover to the actions row */
+.actions{position:relative}
 
 .panel{position:relative;background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:16px;margin:12px 0;box-shadow:var(--shadow);transition:transform var(--dur-3) var(--ease-2), box-shadow var(--dur-3) var(--ease-2), border-color var(--dur-2) var(--ease-1);contain:paint}
 .panel:not([data-tilt]):hover{transform:translateY(-2px)}
@@ -129,6 +131,13 @@ footer.site{padding:12px 0}
 
 /* --- Icon button --- */
 .btn.icon{display:inline-flex;align-items:center;justify-content:center;width:var(--btn-h);height:var(--btn-h);padding:0}
+
+/* --- Contact popover --- */
+.popover{position:absolute;right:0;top:calc(100% + 8px);min-width:260px;max-width:min(92vw, 320px);background:var(--panel);border:1px solid var(--stroke);border-radius:14px;box-shadow:var(--shadow);padding:6px;display:block;opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:opacity var(--dur-2) var(--ease-1), transform var(--dur-2) var(--ease-1);z-index:50}
+.popover.open{opacity:1;transform:none;pointer-events:auto}
+.popover a{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;color:var(--fg);text-decoration:none;white-space:nowrap}
+.popover a:hover{background:rgba(255,255,255,.04)}
+@media (prefers-reduced-motion: reduce){.popover{transition:none}}
 
 /* --- Avatar as image --- */
 .avatar-img{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--stroke);box-shadow:var(--shadow);transition:transform var(--dur-2) var(--ease-1), box-shadow var(--dur-2) var(--ease-1)}

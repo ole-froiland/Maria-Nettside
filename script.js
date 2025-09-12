@@ -241,4 +241,36 @@
     });
   }
 
+  // --- Contact popover ---
+  (function(){
+    const toggle = document.getElementById('contactToggle');
+    const menu = document.getElementById('contactMenu');
+    if(!toggle || !menu) return;
+    const open = ()=>{
+      menu.classList.add('open');
+      toggle.setAttribute('aria-expanded','true');
+      const first = menu.querySelector('a');
+      first && first.focus({preventScroll:true});
+      document.addEventListener('pointerdown', onDocDown, true);
+      document.addEventListener('keydown', onKey);
+    };
+    const close = ()=>{
+      menu.classList.remove('open');
+      toggle.setAttribute('aria-expanded','false');
+      document.removeEventListener('pointerdown', onDocDown, true);
+      document.removeEventListener('keydown', onKey);
+    };
+    const onDocDown = (e)=>{
+      if(menu.contains(e.target) || toggle.contains(e.target)) return;
+      close();
+    };
+    const onKey = (e)=>{
+      if(e.key === 'Escape') { close(); toggle.focus({preventScroll:true}); }
+    };
+    toggle.addEventListener('click', ()=>{
+      const isOpen = menu.classList.contains('open');
+      isOpen ? close() : open();
+    });
+  })();
+
 })();
