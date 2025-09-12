@@ -127,7 +127,7 @@
       role: "Regnskapskonsulent",
       contact: "Kontakt",
       hero_h: "Hvem er jeg?",
-      hero_p: "Jeg er Ole — en nysgjerrig, løsningsorientert og strukturert regnskapskonsulent som liker tall like godt som mennesker. Her er reisen min.",
+      hero_p: "Jeg er Ole — en nysgjerrig, løsningsorientert og strukturert regnskapskonsulent som liker tall like godt som mennesker. Her er reisen min",
       about_h: "Profil",
       about_p: "Regnskapskonsulent i Azets (SMB). Erfaring med bokføring, rapportering og controlling. Utdannet ved Oslomet. Trening, fotball og reise på fritiden.",
       exp_h: "Erfaring",
@@ -256,14 +256,74 @@
   }
   function highlightHero(el){
     const txt = el.textContent;
+    // words to emphasize (excluding 'min' which we treat specially)
     const words = (currentLang === 'en')
       ? ["curious","solution‑oriented","solution-oriented","structured","numbers","people"]
       : ["nysgjerrig","løsningsorientert","strukturert","tall","mennesker"];
     const esc = s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
     const re = new RegExp(`(${words.map(esc).join('|')})`,'gi');
-    const html = txt.replace(re, '<span class="em">$1</span>');
+    let html = txt.replace(re, '<span class="em">$1</span>');
+    // Special highlight for 'min' (NO only)
+    if(currentLang === 'no'){
+      html = html.replace(/\bmin\b/g, '<span class="em em-min">min</span>');
+    }
     el.innerHTML = html;
+    // draw curve from 'min'
+    drawHeroCurve();
   }
+
+  function drawHeroCurve(){
+    if(prefersReduced) return;
+    // remove previous curve
+    document.querySelectorAll('.hero-curve').forEach(n=>n.remove());
+    const anchor = document.querySelector('.em-min');
+    if(!anchor) return;
+    const rect = anchor.getBoundingClientRect();
+    const startX = Math.round(rect.right);
+    const startY = Math.round(rect.top + rect.height * 0.65);
+    const vw = window.innerWidth; const vh = window.innerHeight;
+    const midX = Math.round(vw * 0.5);
+    const endX = midX; const endY = vh;
+    const c1x = Math.round(startX + (midX - startX) * 0.35);
+    const c1y = Math.round(startY - vh * 0.06);
+    const c2x = Math.round(midX);
+    const c2y = Math.round(startY + vh * 0.28);
+    const d = `M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('class','hero-curve');
+    svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+    svg.setAttribute('width','100vw');
+    svg.setAttribute('height','100vh');
+    const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+    const grad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+    grad.setAttribute('id','curveGrad');
+    grad.setAttribute('x1','0'); grad.setAttribute('y1','0'); grad.setAttribute('x2','0'); grad.setAttribute('y2','1');
+    const stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+    stop1.setAttribute('offset','0%'); stop1.setAttribute('stop-color','var(--brand)');
+    const stop2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+    stop2.setAttribute('offset','100%'); stop2.setAttribute('stop-color','var(--sky)');
+    grad.appendChild(stop1); grad.appendChild(stop2); defs.appendChild(grad);
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','url(#curveGrad)');
+    path.setAttribute('stroke-width','1.5');
+    path.setAttribute('pathLength','1');
+    path.setAttribute('stroke-dasharray','1');
+    path.setAttribute('stroke-dashoffset','1');
+    path.setAttribute('class','curve-path');
+    svg.appendChild(defs); svg.appendChild(path);
+    document.body.appendChild(svg);
+    // trigger draw animation
+    requestAnimationFrame(()=>{
+      path.style.strokeDashoffset = '0';
+    });
+  }
+
+  window.addEventListener('resize', ()=>{
+    // recompute curve on resize
+    drawHeroCurve();
+  });
   // initial typing handled via applyLang
 
   // --- Contact popover ---
