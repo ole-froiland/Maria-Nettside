@@ -277,7 +277,6 @@
   }
 
   function drawHeroCurve(){
-    if(prefersReduced) return;
     // remove previous curve
     document.querySelectorAll('.hero-curve').forEach(n=>n.remove());
     const anchor = document.getElementById('min-anchor');
@@ -292,16 +291,16 @@
     range.setEnd(textNode, nIdx + 1);
     const r = range.getClientRects()[0] || anchor.getBoundingClientRect();
     const startX = Math.round(r.right);
-    const startY = Math.round(r.bottom - 1); // baseline-ish
+    const startY = Math.round(r.bottom + 5); // slightly below baseline
     const vw = window.innerWidth; const vh = window.innerHeight;
     const midX = Math.round(vw * 0.5);
-    const endX = midX + Math.round(vw * 0.02);
-    const endY = vh + 40; // continue off-screen
-    // Elegant S-curve controls: move right/up slightly, then sweep through center and down
-    const c1x = startX + Math.round(vw * 0.08);
-    const c1y = startY - Math.round(vh * 0.10);
-    const c2x = midX - Math.round(vw * 0.05);
-    const c2y = startY + Math.round(vh * 0.22);
+    const endX = midX; // bottom center x
+    const endY = vh;   // bottom of viewport
+    // Gentle arc: a touch down, subtle rise, then smooth sweep to bottom center
+    const c1x = startX + Math.round(vw * 0.04);
+    const c1y = startY + Math.round(vh * 0.06); // a little down
+    const c2x = midX - Math.round(vw * 0.06);   // approach center from left for S-curve
+    const c2y = startY - Math.round(vh * 0.08); // slight up before final descent
     const d = `M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('class','hero-curve');
@@ -313,15 +312,21 @@
     path.setAttribute('fill','none');
     path.setAttribute('stroke','var(--brand)');
     path.setAttribute('stroke-linecap','round');
-    path.setAttribute('stroke-width','1.5');
+    path.setAttribute('stroke-width','1');
     path.setAttribute('class','curve-path');
     svg.appendChild(path);
     document.body.appendChild(svg);
-    // dash animation setup
+    // dash setup and animation (forward only)
     const len = path.getTotalLength();
     path.style.strokeDasharray = String(len);
-    path.style.strokeDashoffset = String(len);
-    path.style.setProperty('--plen', String(len));
+    if(prefersReduced){
+      path.style.strokeDashoffset = '0';
+      path.style.animation = 'none';
+    } else {
+      path.style.strokeDashoffset = String(len);
+      path.style.setProperty('--plen', String(len));
+      path.style.animation = 'curveDrawOnce 1.8s ease-in-out forwards';
+    }
   }
 
   window.addEventListener('resize', ()=>{

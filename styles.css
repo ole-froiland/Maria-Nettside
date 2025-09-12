@@ -248,19 +248,9 @@ h1:hover{background-position:200% 0}
 
 /* Hero curve overlay */
 .hero-curve{position:fixed;inset:0;pointer-events:none;z-index:5}
-.hero-curve .curve-path{
-  animation:curveDraw 4.2s ease-in-out infinite;
-}
-@keyframes curveDraw{
-  0%{stroke-dashoffset:var(--plen)}
-  10%{stroke-dashoffset:var(--plen)}
-  50%{stroke-dashoffset:0}
-  60%{stroke-dashoffset:0}
-  100%{stroke-dashoffset:var(--plen)}
-}
-@media (prefers-reduced-motion: reduce){
-  .hero-curve .curve-path{animation:none}
-}
+.hero-curve .curve-path{animation:curveDrawOnce 1.8s ease-in-out forwards}
+@keyframes curveDrawOnce{from{stroke-dashoffset:var(--plen)} to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.hero-curve .curve-path{animation:none}}
 
 /* --- Intro section refresh --- */
 #intro.panel{background:transparent;border:0;box-shadow:none}
