@@ -167,6 +167,7 @@
 
   const langKey = 'lang';
   const langBtn = document.getElementById('langToggle');
+  let typeRaf = null;
   const applyLang = (lang)=>{
     const d = dict[lang] || dict.no;
     document.documentElement.lang = (lang === 'en') ? 'en' : 'no';
@@ -247,13 +248,14 @@
     });
   }
 
-  // --- Hero typewriter ---
+  // --- Hero typewriter (robust, single instance) ---
   function typeHero(){
     const el = document.querySelector('.hero-type');
     if(!el) return;
     const full = el.textContent.trim();
     if(!full) return;
     if(prefersReduced){ el.textContent = full; el.classList.remove('typing'); return; }
+    if(typeRaf) cancelAnimationFrame(typeRaf);
     el.textContent = '';
     el.classList.add('typing');
     let i = 0;
@@ -261,13 +263,12 @@
     const step = ()=>{
       el.textContent += full.slice(i, i + chunk);
       i += chunk;
-      if(i < full.length) requestAnimationFrame(step);
-      else el.classList.remove('typing');
+      if(i < full.length){ typeRaf = requestAnimationFrame(step); }
+      else { el.classList.remove('typing'); typeRaf = null; }
     };
-    requestAnimationFrame(step);
+    typeRaf = requestAnimationFrame(step);
   }
-  // initial typing after DOM is ready and i18n applied
-  window.addEventListener('load', ()=>{ setTimeout(typeHero, 50); });
+  // initial typing handled via applyLang
 
   // --- Contact popover ---
   (function(){
