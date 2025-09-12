@@ -229,14 +229,14 @@ h1:hover{background-position:200% 0}
 @media (prefers-reduced-motion: reduce){.chapter{transition:none}}
 
 /* --- Hero --- */
-.hero{position:relative;display:grid;grid-template-columns:1fr;align-items:center;min-height:68vh;margin:6px 0 10px;border:1px solid var(--stroke);border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.02), transparent);padding:clamp(16px, 4vw, 36px);box-shadow:var(--shadow)}
-.hero .hero-title{font-size:clamp(1.6rem, 1.2rem + 2.2vw, 2.4rem);margin:0 0 .35rem}
-.hero .hero-type{max-width:60ch;color:var(--muted);font-size:clamp(1rem, .95rem + .4vw, 1.125rem);position:relative}
+.hero{position:relative;display:grid;grid-template-columns:1fr;align-items:center;min-height:68vh;margin:6px 0 10px;border-radius:18px;padding:clamp(16px, 4vw, 36px)}
+.hero .hero-title{font-size:clamp(2rem, 1.2rem + 3vw, 3rem);margin:0 0 .5rem}
+.hero .hero-type{max-width:68ch;color:var(--muted);font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);position:relative;line-height:1.6}
 .hero .hero-type.typing::after{content:"|";display:inline-block;margin-left:2px;opacity:.8;animation:blink .9s steps(1,end) infinite}
 @keyframes blink{50%{opacity:0}}
 .hero{--avatar:220px}
 .hero .hero-copy{padding-right:calc(var(--avatar) + clamp(8px, 4vw, 24px))}
-.hero .hero-avatar{position:absolute;right:clamp(8px, 4vw, 24px);bottom:clamp(8px, 4vw, 24px);width:var(--avatar);height:var(--avatar);object-fit:cover;border-radius:50%;border:2px solid var(--stroke);box-shadow:var(--shadow)}
+.hero .hero-avatar{position:absolute;right:clamp(8px, 4vw, 24px);bottom:clamp(8px, 4vw, 24px);width:var(--avatar);height:var(--avatar);object-fit:cover;object-position:var(--avatar-pos, 50% 35%);border-radius:50%;border:2px solid var(--stroke);box-shadow:var(--shadow)}
 @media(min-width:720px){.hero{--avatar:300px}}
 @media(min-width:1024px){.hero{min-height:72vh;--avatar:360px}}
 @media (prefers-reduced-motion: reduce){.hero .hero-type.typing::after{animation:none}}
