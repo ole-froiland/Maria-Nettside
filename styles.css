@@ -204,3 +204,8 @@ h1:hover{background-position:200% 0}
 .chapter{position:fixed;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;z-index:90;opacity:.8;writing-mode:vertical-rl;text-orientation:mixed;display:none}
 @media (min-width:1024px){.chapter{display:block}}
 @media (prefers-reduced-motion: reduce){.chapter{transition:none}}
+
+/* --- Full CV embed --- */
+.cv-view{margin-top:12px;border-radius:16px;overflow:hidden;border:1px solid var(--stroke);background:var(--panel);box-shadow:var(--shadow)}
+.cv-view object{width:100%;height:min(80vh, 900px);display:block}
+@media (max-width:640px){.cv-view object{height:70vh}}
