@@ -18,16 +18,8 @@
 
   btn?.addEventListener('click', () => {
     const next = root.classList.contains('light') ? 'dark' : 'light';
-    if(!prefersReduced){
-      root.classList.add('theming');
-      // apply on next frame to ensure transitions latch
-      requestAnimationFrame(()=>{
-        apply(next);
-        setTimeout(()=> root.classList.remove('theming'), 260);
-      });
-    } else {
-      apply(next);
-    }
+    // Instant toggle for snappy UX (like language switch)
+    apply(next);
   });
 
   document.getElementById('year').textContent = new Date().getFullYear();
