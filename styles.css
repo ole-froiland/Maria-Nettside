@@ -237,9 +237,9 @@ h1:hover{background-position:200% 0}
 .hero .hero-type{max-width:60ch;color:var(--muted);font-size:clamp(1rem, .95rem + .4vw, 1.125rem);position:relative}
 .hero .hero-type.typing::after{content:"|";display:inline-block;margin-left:2px;opacity:.8;animation:blink .9s steps(1,end) infinite}
 @keyframes blink{50%{opacity:0}}
-.hero .hero-avatar{position:absolute;right:clamp(8px, 4vw, 24px);bottom:clamp(8px, 4vw, 24px);width:120px;height:120px;object-fit:cover;border-radius:50%;border:2px solid var(--stroke);box-shadow:var(--shadow)}
-@media(min-width:720px){.hero .hero-avatar{width:150px;height:150px}}
-@media(min-width:1024px){.hero{min-height:72vh}.hero .hero-avatar{width:180px;height:180px}}
+.hero .hero-avatar{position:absolute;right:clamp(8px, 4vw, 24px);bottom:clamp(8px, 4vw, 24px);width:160px;height:160px;object-fit:cover;border-radius:50%;border:2px solid var(--stroke);box-shadow:var(--shadow)}
+@media(min-width:720px){.hero .hero-avatar{width:200px;height:200px}}
+@media(min-width:1024px){.hero{min-height:72vh}.hero .hero-avatar{width:240px;height:240px}}
 @media (prefers-reduced-motion: reduce){.hero .hero-type.typing::after{animation:none}}
 
 /* --- Full CV embed --- */
