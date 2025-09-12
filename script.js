@@ -127,7 +127,7 @@
       role: "Regnskapskonsulent",
       contact: "Kontakt",
       hero_h: "Hvem er jeg?",
-      hero_p: "Heeeii, mitt navn er Ole! Jeg er en 23 år gammel dude fra Sandnes, med to fantastiske foreldre, en eldre bror og en yngre søster. Nå bor jeg i Oslo sammen med samboeren min, hvor jeg også tok bachelor i økonomi og administrasjon på Oslomet. Til daglig jobber jeg som regnskapskonsulent i Azets, der jeg har fått erfaring fra alt fra restaurantbransjen til bemanning – og jeg digger å lære nye ting og finne smartere måter å gjøre ting på. Jeg liker å se sammenhengen mellom tall og mennesker, og hvordan økonomi faktisk påvirker hverdagen til bedrifter. Utenom jobb er jeg aktiv, trener mye, spiller fotball og elsker å reise. Kort sagt: jeg er nysgjerrig, liker utfordringer og prøver alltid å utvikle meg – både faglig og som person.",
+      hero_p: "Heeii, jeg heter Ole! Jeg er en 23 år gammel kar fra Sandnes som nå bor i Oslo med samboeren min. Jeg har bachelor i økonomi og administrasjon fra Oslomet og jobber som regnskapskonsulent i Azets, hvor jeg har fått erfaring fra ulike bransjer og elsker å lære nye ting. Utenom jobb trener jeg, spiller fotball og reiser så ofte jeg kan. Jeg er nysgjerrig, liker utfordringer og prøver alltid å utvikle meg.",
       about_h: "Profil",
       about_p: "Regnskapskonsulent i Azets (SMB). Erfaring med bokføring, rapportering og controlling. Utdannet ved Oslomet. Trening, fotball og reise på fritiden.",
       exp_h: "Erfaring",
