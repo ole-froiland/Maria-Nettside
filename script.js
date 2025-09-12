@@ -127,7 +127,7 @@
       role: "Regnskapskonsulent",
       contact: "Kontakt",
       hero_h: "Hvem er jeg?",
-      hero_p: "Heeii, jeg heter Ole! Jeg er en 23 år gammel kar fra Sandnes som nå bor i Oslo med samboeren min. Jeg har bachelor i økonomi og administrasjon fra Oslomet og jobber som regnskapskonsulent i Azets, hvor jeg har fått erfaring fra ulike bransjer og elsker å lære nye ting. Utenom jobb trener jeg, spiller fotball og reiser så ofte jeg kan. Jeg er nysgjerrig, liker utfordringer og prøver alltid å utvikle meg.",
+      hero_p: "Jeg er Ole — en nysgjerrig, løsningsorientert og strukturert regnskapskonsulent som liker tall like godt som mennesker. Her er reisen min.",
       about_h: "Profil",
       about_p: "Regnskapskonsulent i Azets (SMB). Erfaring med bokføring, rapportering og controlling. Utdannet ved Oslomet. Trening, fotball og reise på fritiden.",
       exp_h: "Erfaring",
@@ -168,6 +168,7 @@
   const langKey = 'lang';
   const langBtn = document.getElementById('langToggle');
   let typeRaf = null;
+  let currentLang = 'no';
   const applyLang = (lang)=>{
     const d = dict[lang] || dict.no;
     document.documentElement.lang = (lang === 'en') ? 'en' : 'no';
@@ -177,6 +178,7 @@
     });
     localStorage.setItem(langKey, lang);
     langBtn.textContent = (lang === 'en') ? 'EN / NO' : 'NO / EN';
+    currentLang = (lang === 'en') ? 'en' : 'no';
     // retype hero after language change
     typeHero();
   };
@@ -238,7 +240,7 @@
     if(!el) return;
     const full = el.textContent.trim();
     if(!full) return;
-    if(prefersReduced){ el.textContent = full; el.classList.remove('typing'); return; }
+    if(prefersReduced){ el.textContent = full; el.classList.remove('typing'); highlightHero(el); return; }
     if(typeRaf) cancelAnimationFrame(typeRaf);
     el.textContent = '';
     el.classList.add('typing');
@@ -248,9 +250,19 @@
       el.textContent += full.slice(i, i + chunk);
       i += chunk;
       if(i < full.length){ typeRaf = requestAnimationFrame(step); }
-      else { el.classList.remove('typing'); typeRaf = null; }
+      else { el.classList.remove('typing'); typeRaf = null; highlightHero(el); }
     };
     typeRaf = requestAnimationFrame(step);
+  }
+  function highlightHero(el){
+    const txt = el.textContent;
+    const words = (currentLang === 'en')
+      ? ["curious","solution‑oriented","solution-oriented","structured","numbers","people"]
+      : ["nysgjerrig","løsningsorientert","strukturert","tall","mennesker"];
+    const esc = s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const re = new RegExp(`(${words.map(esc).join('|')})`,'gi');
+    const html = txt.replace(re, '<span class="em">$1</span>');
+    el.innerHTML = html;
   }
   // initial typing handled via applyLang
 

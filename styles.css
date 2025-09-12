@@ -241,6 +241,11 @@ h1:hover{background-position:200% 0}
 @media(min-width:1024px){.hero{min-height:72vh;--avatar:360px}}
 @media (prefers-reduced-motion: reduce){.hero .hero-type.typing::after{animation:none}}
 
+/* Emphasis for selected words */
+.em{font-weight:700;background:linear-gradient(90deg,var(--brand),var(--sky));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:emPulse 4s ease-in-out infinite alternate}
+@keyframes emPulse{to{background-position:100% 0}}
+@media (prefers-reduced-motion: reduce){.em{animation:none}}
+
 /* --- Full CV embed --- */
 .cv-view{margin-top:12px;border-radius:16px;overflow:hidden;border:1px solid var(--stroke);background:var(--panel);box-shadow:var(--shadow)}
 .cv-view object{width:100%;height:min(80vh, 900px);display:block}
