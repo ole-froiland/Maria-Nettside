@@ -73,6 +73,50 @@
     update();
   }
 
+  // --- Parallax images ---
+  if(!prefersReduced){
+    const parallaxEls = Array.from(document.querySelectorAll('[data-parallax]'));
+    if(parallaxEls.length){
+      let ticking = false;
+      const step = ()=>{
+        parallaxEls.forEach(el=>{
+          const r = el.getBoundingClientRect();
+          const vh = window.innerHeight || document.documentElement.clientHeight;
+          const center = r.top + r.height/2 - vh/2;
+          const offset = Math.max(-40, Math.min(40, -center * 0.06));
+          el.style.transform = `translateY(${offset}px)`;
+        });
+        ticking = false;
+      };
+      const onScroll = ()=>{ if(!ticking){ ticking = true; requestAnimationFrame(step); } };
+      window.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('resize', step);
+      step();
+    }
+  }
+
+  // --- Chapter HUD: show current section ---
+  const chapterEl = document.querySelector('.chapter');
+  if(chapterEl){
+    const sections = Array.from(document.querySelectorAll('section[data-chapter]'));
+    const sectionObserver = new IntersectionObserver((entries)=>{
+      // find the most visible entry
+      let best = null; let area = 0;
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const r = e.target.getBoundingClientRect();
+          const visible = Math.max(0, Math.min(window.innerHeight, r.bottom) - Math.max(0, r.top));
+          if(visible > area){ area = visible; best = e.target; }
+        }
+      });
+      if(best){
+        const t = best.getAttribute('data-chapter');
+        if(t) chapterEl.textContent = t;
+      }
+    }, {threshold:[0.2,0.5,0.8]});
+    sections.forEach(s=>sectionObserver.observe(s));
+  }
+
 
   // --- i18n (NO / EN) ---
   const dict = {

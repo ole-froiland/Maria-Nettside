@@ -14,6 +14,7 @@
 <body>
   <div class="ambient" aria-hidden="true"></div>
   <div class="progress" aria-hidden="true"></div>
+  <div class="chapter" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"></div>
   <a class="skip" href="#main" data-i18n="skip">Hopp til innhold</a>
 
@@ -41,7 +42,7 @@
 
   <main id="main" class="container">
     <!-- Intro (short, clean) -->
-    <section class="panel intro reveal" data-reveal data-tilt>
+    <section id="intro" class="panel intro reveal" data-reveal data-tilt data-chapter="Profil" data-theme="brand">
       <h2 data-i18n="about_h">Profil</h2>
       <p data-i18n="about_p">
         Regnskapskonsulent i Azets (SMB). Erfaring med bokføring, rapportering og controlling.
@@ -55,17 +56,17 @@
     </section>
 
     <!-- Small decorative photos (subtle) -->
-    <section class="gallery">
+    <section class="gallery" aria-label="Galleri">
       <figure class="thumb reveal" data-reveal>
-        <img src="assets/photo-1.jpg" alt="Utebilde" loading="lazy">
+        <img src="assets/photo-1.jpg" alt="Utebilde" loading="lazy" data-parallax>
       </figure>
       <figure class="thumb reveal" data-reveal>
-        <img src="assets/photo-3.jpg" alt="På kamp" loading="lazy">
+        <img src="assets/photo-3.jpg" alt="På kamp" loading="lazy" data-parallax>
       </figure>
     </section>
 
     <!-- Experience timeline -->
-    <section class="panel reveal" data-reveal data-tilt>
+    <section id="experience" class="panel reveal" data-reveal data-tilt data-chapter="Erfaring" data-theme="teal">
       <h2 data-i18n="exp_h">Erfaring</h2>
       <ol class="timeline">
         <li class="t-item">
@@ -110,7 +111,7 @@
     </section>
 
     <!-- Education timeline -->
-    <section class="panel reveal" data-reveal data-tilt>
+    <section id="education" class="panel reveal" data-reveal data-tilt data-chapter="Utdanning" data-theme="violet">
       <h2 data-i18n="edu_h">Utdanning</h2>
       <ol class="timeline">
         <li class="t-item">
@@ -135,7 +136,7 @@
     </section>
 
     <!-- Skills -->
-    <section class="panel reveal" data-reveal data-tilt>
+    <section id="skills" class="panel reveal" data-reveal data-tilt data-chapter="Kompetanse" data-theme="sky">
       <h2 data-i18n="skills_h">Kompetanse</h2>
       <ul class="chips">
         <li>Bokføring</li><li>Rapportering</li><li>Avstemming</li><li>Controlling</li>
