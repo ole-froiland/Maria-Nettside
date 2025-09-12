@@ -267,3 +267,9 @@ h1:hover{background-position:200% 0}
 .cv-view{margin-top:12px;border-radius:16px;overflow:hidden;border:1px solid var(--stroke);background:var(--panel);box-shadow:var(--shadow)}
 .cv-view object{width:100%;height:min(80vh, 900px);display:block}
 @media (max-width:640px){.cv-view object{height:70vh}}
+
+/* --- Info (open style to match hero) --- */
+#info.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(32px, 7vw, 88px) 0}
+#info h2{font-size:clamp(1.6rem, 1.1rem + 2vw, 2.2rem);margin:0 0 .5rem}
+#info .list{gap:10px}
+#info .list li{font-size:clamp(1.05rem, .95rem + .7vw, 1.35rem);font-weight:600;color:var(--fg)}
