@@ -246,6 +246,17 @@ h1:hover{background-position:200% 0}
 @keyframes emPulse{to{background-position:100% 0}}
 @media (prefers-reduced-motion: reduce){.em{animation:none}}
 
+/* --- Intro section refresh --- */
+#intro.panel{background:transparent;border:0;box-shadow:none}
+#intro p{font-size:clamp(1.15rem, 1rem + 1.1vw, 1.6rem);font-weight:700;color:var(--fg);max-width:68ch}
+#intro .contact{margin-top:12px}
+
+/* Center image content in circle and make larger */
+.hero .hero-avatar{object-position:center}
+.hero{--avatar:280px}
+@media(min-width:720px){.hero{--avatar:380px}}
+@media(min-width:1024px){.hero{--avatar:460px}}
+
 /* --- Full CV embed --- */
 .cv-view{margin-top:12px;border-radius:16px;overflow:hidden;border:1px solid var(--stroke);background:var(--panel);box-shadow:var(--shadow)}
 .cv-view object{width:100%;height:min(80vh, 900px);display:block}
