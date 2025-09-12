@@ -329,9 +329,14 @@
     }
   }
 
+  // Recompute curve only on width changes (avoid mobile toolbar scroll resizes)
+  let lastW = window.innerWidth;
   window.addEventListener('resize', ()=>{
-    // recompute curve on resize
-    drawHeroCurve();
+    const w = window.innerWidth;
+    if(w !== lastW){
+      lastW = w;
+      drawHeroCurve();
+    }
   });
   // initial typing handled via applyLang
 
