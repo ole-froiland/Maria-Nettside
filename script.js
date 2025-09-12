@@ -6,6 +6,7 @@
   const stored = localStorage.getItem(key);
   const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
   const body = document.body;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function apply(theme){
     if(theme === 'light'){ root.classList.add('light'); }
@@ -132,5 +133,67 @@
     const current = localStorage.getItem(langKey) || 'no';
     applyLang(current === 'no' ? 'en' : 'no');
   });
+
+  // --- Cinematic interactions ---
+  // Custom cursor follower (fine pointers, no reduced motion)
+  const cursor = document.querySelector('.cursor');
+  if(cursor && !prefersReduced && matchMedia('(pointer:fine)').matches){
+    let x = -100, y = -100, tx = x, ty = y;
+    const speed = 0.18;
+    const tick = ()=>{
+      tx += (x - tx) * speed;
+      ty += (y - ty) * speed;
+      cursor.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+      requestAnimationFrame(tick);
+    };
+    window.addEventListener('pointermove', (e)=>{ x = e.clientX; y = e.clientY; }, {passive:true});
+    window.addEventListener('mouseenter', ()=>{ cursor.style.opacity = .9; });
+    window.addEventListener('mouseleave', ()=>{ cursor.style.opacity = 0; });
+    tick();
+  }
+
+  // Magnetic buttons
+  if(!prefersReduced && matchMedia('(pointer:fine)').matches){
+    const magnets = document.querySelectorAll('.btn');
+    magnets.forEach(btnEl => {
+      let rafId = 0;
+      const onMove = (e)=>{
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(()=>{
+          const r = btnEl.getBoundingClientRect();
+          const dx = e.clientX - (r.left + r.width/2);
+          const dy = e.clientY - (r.top + r.height/2);
+          btnEl.style.transform = `translate(${dx*0.08}px, ${dy*0.08}px) scale(1.03)`;
+        });
+      };
+      const onLeave = ()=>{
+        btnEl.style.transform = '';
+      };
+      btnEl.addEventListener('mousemove', onMove);
+      btnEl.addEventListener('mouseleave', onLeave);
+    });
+  }
+
+  // 3D tilt for panels
+  if(!prefersReduced && matchMedia('(pointer:fine)').matches){
+    const tilts = document.querySelectorAll('[data-tilt]');
+    tilts.forEach(el=>{
+      let rafId = 0;
+      const move = (e)=>{
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(()=>{
+          const r = el.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          const rx = (py) * 8;   // degrees
+          const ry = -(px) * 10; // degrees
+          el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+        });
+      };
+      const leave = ()=>{ el.style.transform = ''; };
+      el.addEventListener('mousemove', move);
+      el.addEventListener('mouseleave', leave);
+    });
+  }
 
 })();
