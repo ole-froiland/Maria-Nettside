@@ -246,19 +246,42 @@
     const toggle = document.getElementById('contactToggle');
     const menu = document.getElementById('contactMenu');
     if(!toggle || !menu) return;
+    const position = ()=>{
+      const r = toggle.getBoundingClientRect();
+      // temporarily show to measure
+      const prev = menu.style.visibility;
+      menu.style.visibility = 'hidden';
+      menu.classList.add('open');
+      const mw = menu.offsetWidth;
+      const mh = menu.offsetHeight;
+      let left = Math.min(window.innerWidth - 12 - mw, Math.max(12, r.right - mw));
+      let top = r.bottom + 8;
+      if(top + mh > window.innerHeight - 12){
+        top = Math.max(12, r.top - 8 - mh);
+      }
+      menu.style.left = left + 'px';
+      menu.style.top = top + 'px';
+      menu.classList.remove('open');
+      menu.style.visibility = prev || '';
+    };
     const open = ()=>{
+      position();
       menu.classList.add('open');
       toggle.setAttribute('aria-expanded','true');
       const first = menu.querySelector('a');
       first && first.focus({preventScroll:true});
       document.addEventListener('pointerdown', onDocDown, true);
       document.addEventListener('keydown', onKey);
+      window.addEventListener('resize', onResize);
+      window.addEventListener('scroll', onResize, {passive:true});
     };
     const close = ()=>{
       menu.classList.remove('open');
       toggle.setAttribute('aria-expanded','false');
       document.removeEventListener('pointerdown', onDocDown, true);
       document.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', onResize);
     };
     const onDocDown = (e)=>{
       if(menu.contains(e.target) || toggle.contains(e.target)) return;
@@ -267,6 +290,7 @@
     const onKey = (e)=>{
       if(e.key === 'Escape') { close(); toggle.focus({preventScroll:true}); }
     };
+    const onResize = ()=>{ if(menu.classList.contains('open')) position(); };
     toggle.addEventListener('click', ()=>{
       const isOpen = menu.classList.contains('open');
       isOpen ? close() : open();

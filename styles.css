@@ -29,7 +29,7 @@ a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
 h1,h2,h3{line-height:1.2;margin:0 0 .25rem}h2{font-size:1.25rem;margin-bottom:.75rem}h3{font-size:1.05rem}
 p{margin:.25rem 0 .75rem;color:var(--fg)}.muted{color:var(--muted)}
 .container{max-width:1000px;margin:0 auto;padding:24px;display:block}
-.site{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid var(--stroke);background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);transition:background-color var(--dur-3) var(--ease-1);contain:paint}
+.site{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid var(--stroke);background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);transition:background-color var(--dur-3) var(--ease-1)}
 .site+main{padding-top:8px}
 footer.site{border-top:1px solid var(--stroke);border-bottom:0;margin-top:32px;border-radius:12px;background:transparent}
 
@@ -42,8 +42,6 @@ footer.site{border-top:1px solid var(--stroke);border-bottom:0;margin-top:32px;b
 .btn:active{transform:translateY(0) scale(.99)}
 .btn.outline{background:linear-gradient(var(--panel), var(--panel)) padding-box, linear-gradient(120deg, color-mix(in oklab, var(--brand) 30%, transparent), color-mix(in oklab, var(--sky) 25%, transparent)) border-box}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-/* anchor popover to the actions row */
-.actions{position:relative}
 
 .panel{position:relative;background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:16px;margin:12px 0;box-shadow:var(--shadow);transition:transform var(--dur-3) var(--ease-2), box-shadow var(--dur-3) var(--ease-2), border-color var(--dur-2) var(--ease-1);contain:paint}
 .panel:not([data-tilt]):hover{transform:translateY(-2px)}
@@ -133,7 +131,7 @@ footer.site{padding:12px 0}
 .btn.icon{display:inline-flex;align-items:center;justify-content:center;width:var(--btn-h);height:var(--btn-h);padding:0}
 
 /* --- Contact popover --- */
-.popover{position:absolute;right:0;top:calc(100% + 8px);min-width:260px;max-width:min(92vw, 320px);background:var(--panel);border:1px solid var(--stroke);border-radius:14px;box-shadow:var(--shadow);padding:6px;display:block;opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:opacity var(--dur-2) var(--ease-1), transform var(--dur-2) var(--ease-1);z-index:50}
+.popover{position:fixed;left:0;top:0;min-width:260px;max-width:min(92vw, 320px);background:var(--panel);border:1px solid var(--stroke);border-radius:14px;box-shadow:var(--shadow);padding:6px;display:block;opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:opacity var(--dur-2) var(--ease-1), transform var(--dur-2) var(--ease-1);z-index:400}
 .popover.open{opacity:1;transform:none;pointer-events:auto}
 .popover a{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;color:var(--fg);text-decoration:none;white-space:nowrap}
 .popover a:hover{background:rgba(255,255,255,.04)}
