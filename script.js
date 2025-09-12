@@ -127,7 +127,7 @@
       role: "Regnskapskonsulent",
       contact: "Kontakt",
       hero_h: "Hvem er jeg?",
-      hero_p: "Jeg er Ole — en nysgjerrig, løsningsorientert og strukturert regnskapskonsulent som liker tall like godt som mennesker. Her er reisen min.",
+      hero_p: "Heeeii, mitt navn er Ole! Jeg er en 23 år gammel dude fra Sandnes, med to fantastiske foreldre, en eldre bror og en yngre søster. Nå bor jeg i Oslo sammen med samboeren min, hvor jeg også tok bachelor i økonomi og administrasjon på Oslomet. Til daglig jobber jeg som regnskapskonsulent i Azets, der jeg har fått erfaring fra alt fra restaurantbransjen til bemanning – og jeg digger å lære nye ting og finne smartere måter å gjøre ting på. Jeg liker å se sammenhengen mellom tall og mennesker, og hvordan økonomi faktisk påvirker hverdagen til bedrifter. Utenom jobb er jeg aktiv, trener mye, spiller fotball og elsker å reise. Kort sagt: jeg er nysgjerrig, liker utfordringer og prøver alltid å utvikle meg – både faglig og som person.",
       about_h: "Profil",
       about_p: "Regnskapskonsulent i Azets (SMB). Erfaring med bokføring, rapportering og controlling. Utdannet ved Oslomet. Trening, fotball og reise på fritiden.",
       exp_h: "Erfaring",
@@ -257,9 +257,11 @@
     el.textContent = '';
     el.classList.add('typing');
     let i = 0;
+    const chunk = 3; // type 3 chars per frame for speed
     const step = ()=>{
-      el.textContent += full.charAt(i++);
-      if(i <= full.length) requestAnimationFrame(step);
+      el.textContent += full.slice(i, i + chunk);
+      i += chunk;
+      if(i < full.length) requestAnimationFrame(step);
       else el.classList.remove('typing');
     };
     requestAnimationFrame(step);
