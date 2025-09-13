@@ -300,21 +300,24 @@
     const sxV = nRect.right + 14;   // litt frem
     const syV = nRect.bottom + 6;   // litt ned
 
-    // Mål for slutt: under info (midt mot høyre)
-    const exV = infoRect.left + infoRect.width * 0.65;
+    // Slutt under Info-teksten (70% inn fra venstre)
+    const exV = infoRect.left + infoRect.width * 0.70;
     const eyV = infoRect.bottom + 32;
 
-    // Waypoint for å styre rundt høyre kant av info
-    const rxV = infoRect.right + 24;
-    const ryV = infoRect.top + infoRect.height * 0.35;
+    // Rute rundt høyre kant av Info
+    const rxVbase = infoRect.right + 24;
+    const ryVbase = infoRect.top + infoRect.height * 0.35;
 
-    // Første kontrollpunkt: myk gli fremover fra start
-    let c1xV = sxV + 120;
-    let c1yV = syV + 12;
+    // Første kontrollpunkt (glid fremover, litt ned) basert på seksjonsbredde og deltaY
+    const heroW = Math.max(1, Math.round(heroRect.width));
+    const deltaY = Math.max(80, eyV - syV);
+    const glide = Math.round(Math.min(160, Math.max(80, heroW * 0.18)));
+    let c1xV = sxV + glide;
+    let c1yV = syV + Math.round(deltaY * 0.12);
 
-    // Andre kontrollpunkt: mot høyre kant av info
-    let c2xV = rxV;
-    let c2yV = ryV;
+    // Andre kontrollpunkt: mot høyre, over Info
+    let c2xV = Math.max(rxVbase, infoRect.right + 20);
+    let c2yV = ryVbase;
 
     // Hold trygg avstand til portrettet (sikkerhetsmargin)
     const SAFE = 36;
@@ -331,6 +334,10 @@
       [c1xV, c1yV] = pushAway(c1xV, c1yV);
       [c2xV, c2yV] = pushAway(c2xV, c2yV);
     }
+
+    // Monoton nedover: c1y < c2y < end.y (med små buffere)
+    if(c2yV >= eyV - 6) c2yV = eyV - 6;
+    if(c1yV >= c2yV - 6) c1yV = c2yV - 6;
 
     // Plasser SVG lokalt i hero
     const topOffset = syV - heroRect.top;
