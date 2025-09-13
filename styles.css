@@ -237,6 +237,8 @@ h1:hover{background-position:200% 0}
 .hero{--avatar:220px}
 .hero .hero-copy{padding-right:calc(var(--avatar) + clamp(8px, 4vw, 24px))}
 .hero .hero-avatar{position:absolute;right:clamp(8px, 4vw, 24px);bottom:clamp(8px, 4vw, 24px);width:var(--avatar);height:var(--avatar);object-fit:cover;object-position:var(--avatar-pos, 50% 35%);border-radius:50%;border:2px solid var(--stroke);box-shadow:var(--shadow)}
+/* Connector SVG anchored to hero */
+.hero .connector{position:absolute;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:0}
 @media(min-width:720px){.hero{--avatar:300px}}
 @media(min-width:1024px){.hero{min-height:72vh;--avatar:360px}}
 @media (prefers-reduced-motion: reduce){.hero .hero-type.typing::after{animation:none}}

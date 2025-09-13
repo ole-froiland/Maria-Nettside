@@ -277,8 +277,8 @@
   }
 
   function drawHeroCurve(){
-    // remove previous curve
-    document.querySelectorAll('.hero-curve').forEach(n=>n.remove());
+    // remove previous connector(s)
+    document.querySelectorAll('#hero .connector').forEach(n=>n.remove());
     const anchor = document.getElementById('min-anchor');
     if(!anchor) return;
     // Find precise rect of the last character 'n' in 'min'
@@ -297,36 +297,24 @@
     const cRect = container.getBoundingClientRect();
     const contW = Math.round(cRect.width);
     const contLeft = cRect.left;
-    // determine end point relative to container
-    const info = document.getElementById('info');
-    const infoRect = info ? info.getBoundingClientRect() : null;
-    const endXv = infoRect ? Math.round(infoRect.right + 8) : Math.round(window.innerWidth * 0.5);
-    const endYv = infoRect ? Math.round(infoRect.top + Math.min(infoRect.height * 0.4, 140)) : Math.round(window.innerHeight);
-    // local SVG box spanning from minY to maxY between start and end
-    const minYv = Math.min(startY, endYv);
-    const maxYv = Math.max(startY, endYv) + 40; // tail room
-    const boxTop = minYv - cRect.top;
-    const boxH = Math.max(40, maxYv - minYv);
-    const boxW = contW;
-    // map points to local coords
-    const sX = startX - contLeft;
-    const sY = startY - minYv;
-    const eX = endXv - contLeft;
-    const eY = endYv - minYv;
-    const midX = Math.round(boxW * 0.5);
-    // control points for gentle S-like arc within local box
-    const c1x = sX + Math.round(boxW * 0.05);
-    const c1y = sY + Math.round(boxH * 0.12);
-    const c2x = Math.round((sX + eX)/2) - Math.round(boxW * 0.08);
-    const c2y = sY - Math.round(boxH * 0.10);
+    // Place inside hero; compute points in hero-local coords, but SVG uses viewport box
+    const hero = document.getElementById('hero');
+    if(!hero) return;
+    const heroRect = hero.getBoundingClientRect();
+    const sX = Math.round(r.right - heroRect.left);
+    const sY = Math.round(r.bottom + 5 - heroRect.top); // slightly below baseline
+    const vw = window.innerWidth; const vh = window.innerHeight;
+    const eX = Math.round(vw * 0.5); // bottom center x of viewport
+    const eY = vh;                   // bottom of viewport
+    // Smooth cubic: slight down, slight up, then sweep to end
+    const c1x = sX + Math.round(vw * 0.04);
+    const c1y = sY + Math.round(vh * 0.06);
+    const c2x = eX - Math.round(vw * 0.06);
+    const c2y = sY - Math.round(vh * 0.08);
     const d = `M ${sX} ${sY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${eX} ${eY}`;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('class','hero-curve');
-    svg.setAttribute('viewBox', `0 0 ${boxW} ${boxH}`);
-    svg.setAttribute('width', `${boxW}`);
-    svg.setAttribute('height', `${boxH}`);
-    svg.style.left = '0px';
-    svg.style.top = `${boxTop}px`;
+    svg.setAttribute('class','connector');
+    svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d', d);
     path.setAttribute('fill','none');
@@ -335,7 +323,7 @@
     path.setAttribute('stroke-width','3');
     path.setAttribute('class','curve-path');
     svg.appendChild(path);
-    container.appendChild(svg);
+    hero.appendChild(svg);
     // dash setup and animation (forward only)
     const len = path.getTotalLength();
     path.style.strokeDasharray = String(len);
