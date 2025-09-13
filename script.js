@@ -127,66 +127,7 @@
     sections.forEach(s=>sectionObserver.observe(s));
   }
 
-  // --- Year Timeline (continuous scroll-through years) ---
-  (function initYearTimeline(){
-    const container = document.getElementById('year-timeline');
-    if(!container) return;
-    const hero = container.querySelector('.year-hero');
-    const markers = Array.from(container.querySelectorAll('[data-year]'));
-    if(!hero || !markers.length) return;
-
-    const prefersReducedYears = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const years = markers.map(m => parseInt(m.getAttribute('data-year')||'', 10)).filter(n=>!Number.isNaN(n));
-    if(!years.length) return;
-    const firstYear = Math.min(...years);
-    const lastYear = Math.max(...years);
-
-    let lastShown = null;        // last year shown in hero
-    let ticking = false;
-
-    const setHero = (y)=>{ hero.textContent = String(y); };
-
-    // Compute nearest allowed year to viewport center and update hero immediately
-    const compute = ()=>{
-      const vhCenter = (window.innerHeight || document.documentElement.clientHeight) / 2;
-      let best = {d: Infinity, y: years[0]};
-      markers.forEach((m)=>{
-        const r = m.getBoundingClientRect();
-        const c = r.top + r.height/2;
-        const d = Math.abs(c - vhCenter);
-        const my = parseInt(m.getAttribute('data-year')||'', 10);
-        if(!Number.isNaN(my) && d < best.d){ best = {d, y: my}; }
-      });
-      const y = best.y;
-      if(y !== lastShown){ setHero(y); lastShown = y; }
-
-      ticking = false;
-    };
-
-    const onScroll = ()=>{
-      if(!ticking){ ticking = true; requestAnimationFrame(compute); }
-    };
-
-    // Initialize and observe when container is near viewport to limit work
-    const initIO = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if(e.isIntersecting){
-          window.addEventListener('scroll', onScroll, {passive:true});
-          window.addEventListener('resize', compute);
-          compute();
-          // No custom wheel/touch snapping — rely on natural page scroll
-        } else {
-          window.removeEventListener('scroll', onScroll);
-          window.removeEventListener('resize', compute);
-        }
-      });
-    }, {root:null, threshold:0, rootMargin:'0px 0px 0px 0px'});
-
-    initIO.observe(container);
-    // Set initial value
-    setHero(firstYear);
-    lastShown = firstYear;
-  })();
+  // (Removed) Old #year-timeline logic to avoid duplicate year headings
 
 
   // --- Vertical Timeline (5 full-screen pages + one-way exit) ---
@@ -198,7 +139,8 @@
     const last = panels[panels.length - 1];
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const setSnap = (on)=>{ tl.style.scrollSnapType = on ? 'y mandatory' : 'none'; };
+    let isSnapOn = true;
+    const setSnap = (on)=>{ tl.style.scrollSnapType = on ? 'y mandatory' : 'none'; isSnapOn = !!on; };
     setSnap(true);
 
     // Reveal effect when panel ≥30% visible within timeline
@@ -227,11 +169,8 @@
     }, {root: tl, threshold: 1.0});
     exitIO.observe(last);
 
-    // Re-enable snap when re-entering the timeline from above
-    const reenableIO = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting){ setSnap(true); } });
-    }, {root: null, threshold: 0});
-    reenableIO.observe(panels[0]);
+    // Re-enable snap once the user starts scrolling the timeline again
+    tl.addEventListener('scroll', ()=>{ if(!isSnapOn) setSnap(true); }, {passive:true});
   })();
 
 

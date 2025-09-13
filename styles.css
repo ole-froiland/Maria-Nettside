@@ -291,19 +291,7 @@ h1:hover{background-position:200% 0}
 #min-anchor{ text-decoration:none !important; }
 #min-anchor::after{ content:none !important; }
 
-/* --- Year Timeline (inside #info) --- */
-#year-timeline{margin-top: clamp(120px, 12vw, 220px)}
-#year-timeline .year-hero{
-  position:sticky; top:52vh; z-index:1;
-  font-weight:900; letter-spacing:.02em;
-  font-size:clamp(3rem, 18vw, 12rem);
-  line-height:1; margin:0 0 8vh;
-  background:linear-gradient(90deg, var(--fg), var(--brand));
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-}
-#year-timeline .year-track{position:relative;display:block}
-#year-timeline .year-marker{height:36vh}
-@media (max-width:640px){#year-timeline .year-marker{height:32vh}}
+/* (Removed) Year Timeline in #info to avoid duplicate year headings */
 
 /* --- Vertical Timeline (full-screen snap) --- */
 #timeline{height:100vh;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;position:relative}
