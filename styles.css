@@ -20,6 +20,8 @@ body{margin:0;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:
   --rose:#f43f5e; --rose-2:#fecdd3;
   /* button sizing */
   --btn-h: 38px; --btn-px: 12px; --btn-r: 12px;
+  /* accent for inline highlights */
+  --accent-blue: var(--brand);
 }
 :root.light{
   --bg:#f7fafc; --fg:#0b1220; --muted:#394154; --panel:#ffffff; --stroke:#e6eaf2;
@@ -28,7 +30,7 @@ body{margin:0;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:
 a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
 h1,h2,h3{line-height:1.2;margin:0 0 .25rem}h2{font-size:1.25rem;margin-bottom:.75rem}h3{font-size:1.05rem}
 p{margin:.25rem 0 .75rem;color:var(--fg)}.muted{color:var(--muted)}
-.container{max-width:1000px;margin:0 auto;padding:24px;display:block;position:relative}
+.container{max-width:1000px;margin:0 auto;padding:24px;display:block}
 .site{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid var(--stroke);background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);transition:background-color var(--dur-3) var(--ease-1)}
 .site+main{padding-top:8px}
 footer.site{border-top:1px solid var(--stroke);border-bottom:0;margin-top:32px;border-radius:12px;background:transparent}
@@ -235,8 +237,8 @@ h1:hover{background-position:200% 0}
 .hero .hero-type.typing::after{content:"|";display:inline-block;margin-left:2px;opacity:.8;animation:blink .9s steps(1,end) infinite}
 @keyframes blink{50%{opacity:0}}
 .hero{--avatar:220px}
-.hero .hero-copy{padding-right:calc(var(--avatar) + clamp(8px, 4vw, 24px))}
-.hero .hero-avatar{position:absolute;right:clamp(8px, 4vw, 24px);bottom:clamp(8px, 4vw, 24px);width:var(--avatar);height:var(--avatar);object-fit:cover;object-position:var(--avatar-pos, 50% 35%);border-radius:50%;border:2px solid var(--stroke);box-shadow:var(--shadow)}
+.hero .hero-copy{position:relative;z-index:1;padding-right:calc(var(--avatar) + clamp(8px, 4vw, 24px))}
+.hero .hero-avatar{position:absolute;right:clamp(8px, 4vw, 24px);bottom:clamp(8px, 4vw, 24px);width:var(--avatar);height:var(--avatar);object-fit:cover;object-position:var(--avatar-pos, 50% 35%);border-radius:50%;border:2px solid var(--stroke);box-shadow:var(--shadow);z-index:1}
 /* Connector SVG anchored to hero */
 .hero .connector{position:absolute;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:0}
 @media(min-width:720px){.hero{--avatar:300px}}
@@ -274,6 +276,6 @@ h1:hover{background-position:200% 0}
 #info.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(72px, 12vw, 180px) 0}
 #info.panel::before, #info.panel::after{display:none !important}
 #info h2{font-size:clamp(2rem, 1.2rem + 3vw, 3rem);margin:0 0 .5rem}
-#info .list{gap:10px}
-#info .list li{font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);font-weight:600;color:var(--fg)}
-#info .list li strong{color:var(--brand)}
+#info .list{gap:10px;max-width:68ch}
+#info .list li{font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);font-weight:400;line-height:1.6;color:var(--fg);letter-spacing:0}
+#info .list .accent{color:var(--accent-blue)}
