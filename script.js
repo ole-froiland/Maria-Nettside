@@ -138,21 +138,28 @@
     const prefersReducedYears = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let currentYear = null;
     let rafId = 0;
+    let animTimer = 0;
 
     const setYear = (y)=>{ hero.textContent = String(y); };
-    const animateTo = (from, to)=>{
+    const animateTo = (_from, to)=>{
       if(prefersReducedYears){ setYear(to); return; }
       cancelAnimationFrame(rafId);
-      const start = performance.now();
-      const dur = 420; // fast flip
-      const ease = (t)=> t<.5 ? 2*t*t : -1+(4-2*t)*t; // easeInOutQuad
-      const step = (t)=>{
-        const p = Math.min(1, (t - start) / dur);
-        const v = Math.round(from + (to - from) * ease(p));
-        setYear(v);
-        if(p < 1) rafId = requestAnimationFrame(step);
-      };
-      rafId = requestAnimationFrame(step);
+      clearTimeout(animTimer);
+      // Smooth swap: fade/slide in the new year
+      hero.style.willChange = 'transform, opacity';
+      hero.style.transition = 'none';
+      hero.style.opacity = '0';
+      hero.style.transform = 'translateY(14px)';
+      requestAnimationFrame(()=>{
+        setYear(to);
+        hero.style.transition = 'transform 520ms cubic-bezier(.16,1,.3,1), opacity 520ms ease';
+        hero.style.opacity = '1';
+        hero.style.transform = 'translateY(0)';
+        animTimer = setTimeout(()=>{
+          hero.style.transition = '';
+          hero.style.willChange = '';
+        }, 560);
+      });
     };
 
     const yio = new IntersectionObserver((entries)=>{
@@ -166,7 +173,8 @@
       });
       if(best){
         const next = parseInt(best.getAttribute('data-year'), 10);
-        if(!Number.isNaN(next) && next !== currentYear){
+        // Only advance forward; never go backwards on upward scroll
+        if(!Number.isNaN(next) && (currentYear == null || next > currentYear)){
           const prev = (currentYear == null) ? next : currentYear;
           currentYear = next;
           animateTo(prev, next);
