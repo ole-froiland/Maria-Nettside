@@ -127,6 +127,58 @@
     sections.forEach(s=>sectionObserver.observe(s));
   }
 
+  // --- Year Timeline (scroll to change year) ---
+  (function initYearTimeline(){
+    const container = document.getElementById('year-timeline');
+    if(!container) return;
+    const hero = container.querySelector('.year-hero');
+    const markers = Array.from(container.querySelectorAll('[data-year]'));
+    if(!hero || !markers.length) return;
+
+    const prefersReducedYears = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let currentYear = null;
+    let rafId = 0;
+
+    const setYear = (y)=>{ hero.textContent = String(y); };
+    const animateTo = (from, to)=>{
+      if(prefersReducedYears){ setYear(to); return; }
+      cancelAnimationFrame(rafId);
+      const start = performance.now();
+      const dur = 420; // fast flip
+      const ease = (t)=> t<.5 ? 2*t*t : -1+(4-2*t)*t; // easeInOutQuad
+      const step = (t)=>{
+        const p = Math.min(1, (t - start) / dur);
+        const v = Math.round(from + (to - from) * ease(p));
+        setYear(v);
+        if(p < 1) rafId = requestAnimationFrame(step);
+      };
+      rafId = requestAnimationFrame(step);
+    };
+
+    const yio = new IntersectionObserver((entries)=>{
+      let best = null; let area = 0;
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const r = e.target.getBoundingClientRect();
+          const visible = Math.max(0, Math.min(window.innerHeight, r.bottom) - Math.max(0, r.top));
+          if(visible > area){ area = visible; best = e.target; }
+        }
+      });
+      if(best){
+        const next = parseInt(best.getAttribute('data-year'), 10);
+        if(!Number.isNaN(next) && next !== currentYear){
+          const prev = (currentYear == null) ? next : currentYear;
+          currentYear = next;
+          animateTo(prev, next);
+        }
+      }
+    }, {threshold:[0.15,0.5,0.85], rootMargin: '0px 0px -10% 0px'});
+
+    markers.forEach(m => yio.observe(m));
+    const init = parseInt(markers[0].getAttribute('data-year'), 10);
+    if(!Number.isNaN(init)) { currentYear = init; setYear(init); }
+  })();
+
 
   // --- i18n (NO / EN) ---
   const dict = {
