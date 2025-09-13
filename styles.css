@@ -247,8 +247,8 @@ h1:hover{background-position:200% 0}
 @media (prefers-reduced-motion: reduce){.em{animation:none}}
 
 /* Hero curve overlay */
-.hero-curve{position:fixed;inset:0;pointer-events:none;z-index:15}
-.hero-curve .curve-path{animation:curveDrawOnce 1.8s ease-in-out forwards}
+.hero-curve{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100svh;pointer-events:none;z-index:15}
+.hero-curve .curve-path{animation:curveDrawOnce 1.8s ease-in-out forwards;vector-effect:non-scaling-stroke}
 @keyframes curveDrawOnce{from{stroke-dashoffset:var(--plen)} to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion: reduce){.hero-curve .curve-path{animation:none}}
 
