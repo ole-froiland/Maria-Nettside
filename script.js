@@ -316,6 +316,22 @@
     let c2xV = Math.max(rxVbase, infoRect.right + 20);
     let c2yV = ryVbase;
 
+    // Global rightward shift (~2cm) for path shape, keeping start/end anchors
+    const pxFromCm = (cm)=>{
+      const el = document.createElement('div');
+      el.style.position = 'absolute';
+      el.style.width = cm + 'cm';
+      el.style.height = '0';
+      el.style.visibility = 'hidden';
+      document.body.appendChild(el);
+      const v = el.getBoundingClientRect().width || 76; // fallback ~2cm at 96dpi
+      el.remove();
+      return v;
+    };
+    const shiftX = Math.round(pxFromCm(2));
+    c1xV += shiftX;
+    c2xV += shiftX;
+
     // Hold trygg avstand til portrettet (sikkerhetsmargin)
     const SAFE = 36;
     if(avatarRect){
