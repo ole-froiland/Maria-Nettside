@@ -301,40 +301,38 @@
     const hero = document.getElementById('hero');
     if(!hero) return;
     const heroRect = hero.getBoundingClientRect();
-    const vw = window.innerWidth; const vh = window.innerHeight;
-    // start (local to hero)
-    const sX = Math.round(r.right - heroRect.left);
-    const sYv = Math.round(r.bottom + 5); // viewport coords
-    // target under the Info list (viewport coords)
+    // Section width (W) and vertical distance (H)
+    const W = Math.max(1, Math.round(heroRect.width));
+    const sx = Math.round(r.right - heroRect.left);
+    const syViewport = Math.round(r.bottom + 6); // +6px down from baseline
+    // Info bottom (viewport coords)
     const lastItem = document.querySelector('#info .list li:last-child');
     const infoEl = document.getElementById('info');
     const tRect = (lastItem || infoEl)?.getBoundingClientRect();
-    const underYv = tRect ? Math.round(tRect.bottom + 32) : Math.round(vh * 0.95);
-    const endXv = Math.round(vw * (vw < 600 ? 0.20 : 0.12)); // lower-left tendency
-    const endYv = underYv;
-    // Build a local box spanning start->end Y to keep SVG compact and hero-anchored
-    const minYv = Math.min(sYv, endYv);
-    const maxYv = Math.max(sYv, endYv) + 40; // tail room
-    const boxTop = minYv - heroRect.top;
-    const boxH = Math.max(40, maxYv - minYv);
-    const boxW = vw;
-    // Map points to local box coords
-    const sY = sYv - minYv;
-    const eX = endXv;
-    const eY = endYv - minYv;
-    // Controls: gentle descent then route below list before sweeping leftward
-    const c1x = sX + Math.round(boxW * 0.05);
-    const c1y = sY + Math.round(boxH * (vw < 600 ? 0.10 : 0.14));
-    const c2x = Math.round((sX + eX) / 2);
-    const c2y = eY - Math.round(boxH * (vw < 600 ? 0.08 : 0.12));
-    const d = `M ${sX} ${sY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${eX} ${eY}`;
+    const infoBottomV = tRect ? Math.round(tRect.bottom) : Math.round(window.innerHeight * 0.9);
+    const endOffsetY = (window.innerWidth < 600) ? 28 : 36; // 24–40px
+    const eyViewport = infoBottomV + endOffsetY;
+    // Build local SVG box: top aligned to sy, height H to ey + padding
+    const topOffset = syViewport - heroRect.top; // place SVG here
+    const H = Math.max(60, eyViewport - syViewport + 80);
+    // End x within section: ~12–16vw from left edge of section
+    const endFrac = (window.innerWidth < 640) ? 0.18 : 0.14; // responsive tweak
+    const ex = Math.round(W * endFrac);
+    const ey = Math.round(eyViewport - syViewport); // local within SVG
+    const sxLocal = sx; const syLocal = 0;
+    // Cubic Bezier per spec
+    const c1x = Math.round(sxLocal + 0.22 * W);
+    const c1y = Math.round(syLocal + 0.08 * H);
+    const c2x = Math.round(ex - 0.18 * W);
+    const c2y = Math.round(syLocal + 0.62 * H);
+    const d = `M ${sxLocal} ${syLocal} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${ex} ${ey}`;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('class','connector');
-    svg.setAttribute('viewBox', `0 0 ${boxW} ${boxH}`);
-    svg.setAttribute('width', String(boxW));
-    svg.setAttribute('height', String(boxH));
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('width', String(W));
+    svg.setAttribute('height', String(H));
     svg.style.left = '0px';
-    svg.style.top = `${boxTop}px`;
+    svg.style.top = `${topOffset}px`;
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d', d);
     path.setAttribute('fill','none');
