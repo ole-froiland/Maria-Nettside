@@ -145,6 +145,7 @@
     let lastComputed = null;     // last continuous year computed from position (float)
     let ticking = false;
     let settleTimer = 0;
+    let isSnapping = false;      // lock while animating to next/prev
 
     const setHero = (y)=>{ hero.textContent = String(y); };
 
@@ -212,6 +213,35 @@
       if(!ticking){ ticking = true; requestAnimationFrame(compute); }
     };
 
+    // Helper: index of marker closest to viewport center
+    const getActiveIndex = () => {
+      const vhCenter = (window.innerHeight || document.documentElement.clientHeight) / 2;
+      let bestI = 0; let bestD = Infinity;
+      markers.forEach((m, i)=>{
+        const r = m.getBoundingClientRect();
+        const c = r.top + r.height/2;
+        const d = Math.abs(c - vhCenter);
+        if(d < bestD){ bestD = d; bestI = i; }
+      });
+      return bestI;
+    };
+
+    // Smoothly scroll so target marker center aligns to viewport center
+    const snapToIndex = (idx)=>{
+      const m = markers[idx];
+      if(!m) return;
+      const r = m.getBoundingClientRect();
+      const currentY = window.scrollY || window.pageYOffset || 0;
+      const targetCenterY = currentY + r.top + r.height/2;
+      const viewportCenterY = currentY + (window.innerHeight || document.documentElement.clientHeight)/2;
+      const delta = targetCenterY - viewportCenterY;
+      if(Math.abs(delta) < 2) return; // already centered enough
+      isSnapping = true;
+      window.scrollTo({ top: currentY + delta, behavior: 'smooth' });
+      // unlock after a short duration; also compute to update year
+      setTimeout(()=>{ isSnapping = false; compute(); }, 520);
+    };
+
     // Initialize and observe when container is near viewport to limit work
     const initIO = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{
@@ -219,9 +249,49 @@
           window.addEventListener('scroll', onScroll, {passive:true});
           window.addEventListener('resize', compute);
           compute();
+          // Magnetic wheel navigation (only when timeline is in view)
+          const onWheel = (we)=>{
+            // If already snapping, ignore wheel to avoid stacking
+            if(isSnapping) { we.preventDefault(); return; }
+            const dy = we.deltaY || 0;
+            if(Math.abs(dy) < 1) return; // ignore tiny/noise
+            const i = getActiveIndex();
+            const next = dy > 0 ? Math.min(i+1, markers.length-1) : Math.max(i-1, 0);
+            if(next !== i){
+              we.preventDefault();
+              snapToIndex(next);
+            }
+            // else allow default scrolling to continue outside timeline
+          };
+          // keep reference to remove later
+          container.__wheelHandler = onWheel;
+          window.addEventListener('wheel', onWheel, {passive:false});
+
+          // Touch (swipe) navigation
+          let touchStartY = 0; let touchActive = false;
+          const onTouchStart = (te)=>{ touchActive = true; touchStartY = te.touches?.[0]?.clientY || 0; };
+          const onTouchEnd = (te)=>{
+            if(!touchActive || isSnapping) return;
+            touchActive = false;
+            const endY = (te.changedTouches?.[0]?.clientY) || touchStartY;
+            const dy = touchStartY - endY; // positive means swipe up -> scroll down
+            if(Math.abs(dy) < 12) return; // small move: ignore
+            const i = getActiveIndex();
+            const next = dy > 0 ? Math.min(i+1, markers.length-1) : Math.max(i-1, 0);
+            if(next !== i){
+              snapToIndex(next);
+            }
+          };
+          container.__touchStart = onTouchStart;
+          container.__touchEnd = onTouchEnd;
+          window.addEventListener('touchstart', onTouchStart, {passive:true});
+          window.addEventListener('touchend', onTouchEnd, {passive:true});
         } else {
           window.removeEventListener('scroll', onScroll);
           window.removeEventListener('resize', compute);
+          if(container.__wheelHandler){ window.removeEventListener('wheel', container.__wheelHandler); container.__wheelHandler = null; }
+          if(container.__touchStart){ window.removeEventListener('touchstart', container.__touchStart); container.__touchStart = null; }
+          if(container.__touchEnd){ window.removeEventListener('touchend', container.__touchEnd); container.__touchEnd = null; }
         }
       });
     }, {root:null, threshold:0, rootMargin:'-10% 0px -10% 0px'});
