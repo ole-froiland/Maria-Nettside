@@ -296,9 +296,9 @@
     const infoRect   = info.getBoundingClientRect();
     const avatarRect = avatar?.getBoundingClientRect();
 
-    // Start like etter "min"
-    const sxV = nRect.right + 14;   // litt frem
-    const syV = nRect.bottom + 6;   // litt ned
+    // Start point: tiny nudge right, sit on baseline (flush with 'min')
+    const sxV = nRect.right + 2;
+    const syV = nRect.bottom - 2;
 
     // Slutt under Info-teksten (70% inn fra venstre)
     const exV = infoRect.left + infoRect.width * 0.70;
@@ -308,12 +308,9 @@
     const rxVbase = infoRect.right + 24;
     const ryVbase = infoRect.top + infoRect.height * 0.35;
 
-    // Første kontrollpunkt (glid fremover, litt ned) basert på seksjonsbredde og deltaY
-    const heroW = Math.max(1, Math.round(heroRect.width));
-    const deltaY = Math.max(80, eyV - syV);
-    const glide = Math.round(Math.min(160, Math.max(80, heroW * 0.18)));
-    let c1xV = sxV + glide;
-    let c1yV = syV + Math.round(deltaY * 0.12);
+    // First control: small forward glide, not down
+    let c1xV = sxV + 60;
+    let c1yV = syV + 2;
 
     // Andre kontrollpunkt: mot høyre, over Info
     let c2xV = Math.max(rxVbase, infoRect.right + 20);

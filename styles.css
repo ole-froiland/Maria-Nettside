@@ -239,8 +239,8 @@ h1:hover{background-position:200% 0}
 .hero{--avatar:220px}
 .hero .hero-copy{position:relative;z-index:1;padding-right:calc(var(--avatar) + clamp(8px, 4vw, 24px))}
 .hero .hero-avatar{position:absolute;right:clamp(8px, 4vw, 24px);bottom:clamp(8px, 4vw, 24px);width:var(--avatar);height:var(--avatar);object-fit:cover;object-position:var(--avatar-pos, 50% 35%);border-radius:50%;border:2px solid var(--stroke);box-shadow:var(--shadow);z-index:1}
-/* Connector SVG anchored to hero */
-.hero .connector{position:absolute;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:0}
+/* Connector SVG anchored to hero (sized/positioned via inline styles) */
+.hero .connector{position:absolute;left:0;pointer-events:none;z-index:0}
 @media(min-width:720px){.hero{--avatar:300px}}
 @media(min-width:1024px){.hero{min-height:72vh;--avatar:360px}}
 @media (prefers-reduced-motion: reduce){.hero .hero-type.typing::after{animation:none}}
@@ -281,8 +281,12 @@ h1:hover{background-position:200% 0}
 #info .list .accent{color:var(--accent-blue)}
 /* Hero connector defaults (ensure layering and non-interactive) */
 #hero{position:relative}
-#hero .connector{position:absolute;inset:0;pointer-events:none;z-index:0}
+#hero .connector{position:absolute;left:0;pointer-events:none;z-index:0;top:auto;right:auto;bottom:auto}
 .curve-path{fill:none;stroke-linecap:round}
 @media (prefers-reduced-motion: reduce){
   .curve-path{animation:none !important;stroke-dashoffset:0 !important}
 }
+
+/* Ensure no underline/artifact on the 'min' anchor */
+#min-anchor{ text-decoration:none !important; background-image:none !important; }
+#min-anchor::after{ content:none !important; }
