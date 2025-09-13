@@ -291,9 +291,8 @@ h1:hover{background-position:200% 0}
 #min-anchor{ text-decoration:none !important; }
 #min-anchor::after{ content:none !important; }
 
-/* --- Year Timeline --- */
-#year-timeline.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(36px, 10vw, 120px) 0}
-#year-timeline.panel::before, #year-timeline.panel::after{display:none}
+/* --- Year Timeline (inside #info) --- */
+#year-timeline{margin-top: clamp(20px, 4vw, 40px)}
 #year-timeline .year-hero{
   position:sticky; top:18vh; z-index:1;
   font-weight:900; letter-spacing:.02em;
