@@ -159,7 +159,8 @@
         if(!Number.isNaN(my) && d < best.d){ best = {d, y: my}; }
       });
       const y = best.y;
-      if(y !== lastShown){ setHero(y); lastShown = y; }
+      const nextY = (lastShown == null) ? y : Math.max(lastShown, y);
+      if(nextY !== lastShown){ setHero(nextY); lastShown = nextY; }
 
       ticking = false;
     };
@@ -210,8 +211,9 @@
             if(isSnapping) { we.preventDefault(); return; }
             const dy = we.deltaY || 0;
             if(Math.abs(dy) < 1) return; // ignore tiny/noise
+            if(dy <= 0) return; // only allow moving forward in years
             const i = getActiveIndex();
-            const next = dy > 0 ? Math.min(i+1, markers.length-1) : Math.max(i-1, 0);
+            const next = Math.min(i+1, markers.length-1);
             if(next !== i){
               we.preventDefault();
               snapToIndex(next);
@@ -231,8 +233,9 @@
             const endY = (te.changedTouches?.[0]?.clientY) || touchStartY;
             const dy = touchStartY - endY; // positive means swipe up -> scroll down
             if(Math.abs(dy) < 12) return; // small move: ignore
+            if(dy <= 0) return; // only allow moving forward in years
             const i = getActiveIndex();
-            const next = dy > 0 ? Math.min(i+1, markers.length-1) : Math.max(i-1, 0);
+            const next = Math.min(i+1, markers.length-1);
             if(next !== i){
               snapToIndex(next);
             }
