@@ -141,29 +141,70 @@
     const firstYear = Math.min(...years);
     const lastYear = Math.max(...years);
 
-    let lastShown = null;
+    let lastShown = null;        // last integer shown in hero
+    let lastComputed = null;     // last continuous year computed from position (float)
     let ticking = false;
+    let settleTimer = 0;
 
     const setHero = (y)=>{ hero.textContent = String(y); };
 
-    // Compute nearest allowed year based on marker closest to viewport center
-    const compute = ()=>{
-      const vhCenter = (window.innerHeight || document.documentElement.clientHeight) / 2;
-      let best = {d: Infinity, y: years[0]};
-      markers.forEach((m)=>{
-        const r = m.getBoundingClientRect();
-        const c = r.top + r.height/2;
-        const d = Math.abs(c - vhCenter);
-        const my = parseInt(m.getAttribute('data-year')||'', 10);
-        if(!Number.isNaN(my) && d < best.d){ best = {d, y: my}; }
+    const animateTo = (to)=>{
+      if(prefersReducedYears){ setHero(to); return; }
+      // Smooth swap: quick fade/slide for the final snap
+      hero.style.willChange = 'transform, opacity';
+      hero.style.transition = 'none';
+      hero.style.opacity = '0';
+      hero.style.transform = 'translateY(10px)';
+      requestAnimationFrame(()=>{
+        setHero(to);
+        hero.style.transition = 'transform 320ms cubic-bezier(.16,1,.3,1), opacity 320ms ease';
+        hero.style.opacity = '1';
+        hero.style.transform = 'translateY(0)';
+        setTimeout(()=>{ hero.style.transition=''; hero.style.willChange=''; }, 360);
       });
-      const y = best.y;
+    };
 
-      if(y !== lastShown){
-        // Simple, snappy update without heavy transitions for frequent changes
-        setHero(y);
-        lastShown = y;
+    // Compute continuous year based on scroll position, then later snap to nearest allowed
+    const compute = ()=>{
+      const first = markers[0];
+      const last = markers[markers.length-1];
+      if(!first || !last){ ticking=false; return; }
+
+      const fr = first.getBoundingClientRect();
+      const lr = last.getBoundingClientRect();
+      const fc = fr.top + fr.height/2;
+      const lc = lr.top + lr.height/2;
+      const vhCenter = (window.innerHeight || document.documentElement.clientHeight) / 2;
+
+      const total = (lc - fc) || 1;
+      let t = (vhCenter - fc) / total; // 0..1 across the whole track
+      t = Math.max(0, Math.min(1, t));
+
+      const yFloat = firstYear + t * (lastYear - firstYear);
+      lastComputed = yFloat;
+      const yInt = Math.round(yFloat);
+
+      if(yInt !== lastShown){
+        setHero(yInt);
+        lastShown = yInt;
       }
+
+      // Debounced snap to nearest allowed year when scrolling stops
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(()=>{
+        // find nearest allowed year to lastComputed
+        let nearest = years[0];
+        let bestD = Math.abs(lastComputed - nearest);
+        for(const y of years){
+          const d = Math.abs(lastComputed - y);
+          if(d < bestD){ bestD = d; nearest = y; }
+        }
+        if(nearest !== lastShown){
+          animateTo(nearest);
+          lastShown = nearest;
+        }
+      }, 140);
+
       ticking = false;
     };
 
