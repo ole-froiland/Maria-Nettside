@@ -146,39 +146,18 @@
 
     const setHero = (y)=>{ hero.textContent = String(y); };
 
-    // Compute year based on scroll position between first and last marker centers
+    // Compute nearest allowed year based on marker closest to viewport center
     const compute = ()=>{
-      const track = container.querySelector('.year-track');
-      const first = markers[0];
-      const last = markers[markers.length-1];
-      if(!track || !first || !last) return;
-      const fr = first.getBoundingClientRect();
-      const lr = last.getBoundingClientRect();
-      const fc = fr.top + fr.height/2;
-      const lc = lr.top + lr.height/2;
       const vhCenter = (window.innerHeight || document.documentElement.clientHeight) / 2;
-
-      // Normalize center position in [0,1] from first marker center to last marker center
-      const total = (lc - fc) || 1;
-      let t = (vhCenter - fc) / total;
-      t = Math.max(0, Math.min(1, t));
-
-      // Interpolate year
-      let y = Math.round(firstYear + t * (lastYear - firstYear));
-
-      // If reduced motion is requested, snap to nearest marker instead
-      if(prefersReducedYears){
-        // find closest marker by distance to viewport center
-        let best = {d: Infinity, y: firstYear};
-        markers.forEach((m, i)=>{
-          const r = m.getBoundingClientRect();
-          const c = r.top + r.height/2;
-          const d = Math.abs(c - vhCenter);
-          const my = years[i];
-          if(d < best.d){ best = {d, y: my}; }
-        });
-        y = best.y;
-      }
+      let best = {d: Infinity, y: years[0]};
+      markers.forEach((m)=>{
+        const r = m.getBoundingClientRect();
+        const c = r.top + r.height/2;
+        const d = Math.abs(c - vhCenter);
+        const my = parseInt(m.getAttribute('data-year')||'', 10);
+        if(!Number.isNaN(my) && d < best.d){ best = {d, y: my}; }
+      });
+      const y = best.y;
 
       if(y !== lastShown){
         // Simple, snappy update without heavy transitions for frequent changes
