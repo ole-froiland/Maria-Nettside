@@ -141,70 +141,25 @@
     const firstYear = Math.min(...years);
     const lastYear = Math.max(...years);
 
-    let lastShown = null;        // last integer shown in hero
-    let lastComputed = null;     // last continuous year computed from position (float)
+    let lastShown = null;        // last year shown in hero (snapped)
     let ticking = false;
-    let settleTimer = 0;
     let isSnapping = false;      // lock while animating to next/prev
 
     const setHero = (y)=>{ hero.textContent = String(y); };
 
-    const animateTo = (to)=>{
-      if(prefersReducedYears){ setHero(to); return; }
-      // Smooth swap: quick fade/slide for the final snap
-      hero.style.willChange = 'transform, opacity';
-      hero.style.transition = 'none';
-      hero.style.opacity = '0';
-      hero.style.transform = 'translateY(10px)';
-      requestAnimationFrame(()=>{
-        setHero(to);
-        hero.style.transition = 'transform 320ms cubic-bezier(.16,1,.3,1), opacity 320ms ease';
-        hero.style.opacity = '1';
-        hero.style.transform = 'translateY(0)';
-        setTimeout(()=>{ hero.style.transition=''; hero.style.willChange=''; }, 360);
-      });
-    };
-
-    // Compute continuous year based on scroll position, then later snap to nearest allowed
+    // Compute nearest allowed year to viewport center and update hero immediately
     const compute = ()=>{
-      const first = markers[0];
-      const last = markers[markers.length-1];
-      if(!first || !last){ ticking=false; return; }
-
-      const fr = first.getBoundingClientRect();
-      const lr = last.getBoundingClientRect();
-      const fc = fr.top + fr.height/2;
-      const lc = lr.top + lr.height/2;
       const vhCenter = (window.innerHeight || document.documentElement.clientHeight) / 2;
-
-      const total = (lc - fc) || 1;
-      let t = (vhCenter - fc) / total; // 0..1 across the whole track
-      t = Math.max(0, Math.min(1, t));
-
-      const yFloat = firstYear + t * (lastYear - firstYear);
-      lastComputed = yFloat;
-      const yInt = Math.round(yFloat);
-
-      if(yInt !== lastShown){
-        setHero(yInt);
-        lastShown = yInt;
-      }
-
-      // Debounced snap to nearest allowed year when scrolling stops
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(()=>{
-        // find nearest allowed year to lastComputed
-        let nearest = years[0];
-        let bestD = Math.abs(lastComputed - nearest);
-        for(const y of years){
-          const d = Math.abs(lastComputed - y);
-          if(d < bestD){ bestD = d; nearest = y; }
-        }
-        if(nearest !== lastShown){
-          animateTo(nearest);
-          lastShown = nearest;
-        }
-      }, 140);
+      let best = {d: Infinity, y: years[0]};
+      markers.forEach((m)=>{
+        const r = m.getBoundingClientRect();
+        const c = r.top + r.height/2;
+        const d = Math.abs(c - vhCenter);
+        const my = parseInt(m.getAttribute('data-year')||'', 10);
+        if(!Number.isNaN(my) && d < best.d){ best = {d, y: my}; }
+      });
+      const y = best.y;
+      if(y !== lastShown){ setHero(y); lastShown = y; }
 
       ticking = false;
     };
@@ -263,9 +218,9 @@
             }
             // else allow default scrolling to continue outside timeline
           };
-          // keep reference to remove later
+          // attach to container so body scroll outside remains unaffected
           container.__wheelHandler = onWheel;
-          window.addEventListener('wheel', onWheel, {passive:false});
+          container.addEventListener('wheel', onWheel, {passive:false});
 
           // Touch (swipe) navigation
           let touchStartY = 0; let touchActive = false;
@@ -284,14 +239,14 @@
           };
           container.__touchStart = onTouchStart;
           container.__touchEnd = onTouchEnd;
-          window.addEventListener('touchstart', onTouchStart, {passive:true});
-          window.addEventListener('touchend', onTouchEnd, {passive:true});
+          container.addEventListener('touchstart', onTouchStart, {passive:true});
+          container.addEventListener('touchend', onTouchEnd, {passive:true});
         } else {
           window.removeEventListener('scroll', onScroll);
           window.removeEventListener('resize', compute);
-          if(container.__wheelHandler){ window.removeEventListener('wheel', container.__wheelHandler); container.__wheelHandler = null; }
-          if(container.__touchStart){ window.removeEventListener('touchstart', container.__touchStart); container.__touchStart = null; }
-          if(container.__touchEnd){ window.removeEventListener('touchend', container.__touchEnd); container.__touchEnd = null; }
+          if(container.__wheelHandler){ container.removeEventListener('wheel', container.__wheelHandler); container.__wheelHandler = null; }
+          if(container.__touchStart){ container.removeEventListener('touchstart', container.__touchStart); container.__touchStart = null; }
+          if(container.__touchEnd){ container.removeEventListener('touchend', container.__touchEnd); container.__touchEnd = null; }
         }
       });
     }, {root:null, threshold:0, rootMargin:'-10% 0px -10% 0px'});
