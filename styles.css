@@ -28,7 +28,7 @@ body{margin:0;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:
 a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
 h1,h2,h3{line-height:1.2;margin:0 0 .25rem}h2{font-size:1.25rem;margin-bottom:.75rem}h3{font-size:1.05rem}
 p{margin:.25rem 0 .75rem;color:var(--fg)}.muted{color:var(--muted)}
-.container{max-width:1000px;margin:0 auto;padding:24px;display:block}
+.container{max-width:1000px;margin:0 auto;padding:24px;display:block;position:relative}
 .site{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid var(--stroke);background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);transition:background-color var(--dur-3) var(--ease-1)}
 .site+main{padding-top:8px}
 footer.site{border-top:1px solid var(--stroke);border-bottom:0;margin-top:32px;border-radius:12px;background:transparent}
@@ -247,7 +247,7 @@ h1:hover{background-position:200% 0}
 @media (prefers-reduced-motion: reduce){.em{animation:none}}
 
 /* Hero curve overlay */
-.hero-curve{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100svh;pointer-events:none;z-index:15}
+.hero-curve{position:absolute;left:0;top:0;pointer-events:none;z-index:1}
 .hero-curve .curve-path{animation:curveDrawOnce 1.8s ease-in-out forwards;vector-effect:non-scaling-stroke}
 @keyframes curveDrawOnce{from{stroke-dashoffset:var(--plen)} to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion: reduce){.hero-curve .curve-path{animation:none}}
