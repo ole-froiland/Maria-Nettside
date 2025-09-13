@@ -301,20 +301,40 @@
     const hero = document.getElementById('hero');
     if(!hero) return;
     const heroRect = hero.getBoundingClientRect();
-    const sX = Math.round(r.right - heroRect.left);
-    const sY = Math.round(r.bottom + 5 - heroRect.top); // slightly below baseline
     const vw = window.innerWidth; const vh = window.innerHeight;
-    const eX = Math.round(vw * 0.5); // bottom center x of viewport
-    const eY = vh;                   // bottom of viewport
-    // Smooth cubic: slight down, slight up, then sweep to end
-    const c1x = sX + Math.round(vw * 0.04);
-    const c1y = sY + Math.round(vh * 0.06);
-    const c2x = eX - Math.round(vw * 0.06);
-    const c2y = sY - Math.round(vh * 0.08);
+    // start (local to hero)
+    const sX = Math.round(r.right - heroRect.left);
+    const sYv = Math.round(r.bottom + 5); // viewport coords
+    // target under the Info list (viewport coords)
+    const lastItem = document.querySelector('#info .list li:last-child');
+    const infoEl = document.getElementById('info');
+    const tRect = (lastItem || infoEl)?.getBoundingClientRect();
+    const underYv = tRect ? Math.round(tRect.bottom + 32) : Math.round(vh * 0.95);
+    const endXv = Math.round(vw * (vw < 600 ? 0.20 : 0.12)); // lower-left tendency
+    const endYv = underYv;
+    // Build a local box spanning start->end Y to keep SVG compact and hero-anchored
+    const minYv = Math.min(sYv, endYv);
+    const maxYv = Math.max(sYv, endYv) + 40; // tail room
+    const boxTop = minYv - heroRect.top;
+    const boxH = Math.max(40, maxYv - minYv);
+    const boxW = vw;
+    // Map points to local box coords
+    const sY = sYv - minYv;
+    const eX = endXv;
+    const eY = endYv - minYv;
+    // Controls: gentle descent then route below list before sweeping leftward
+    const c1x = sX + Math.round(boxW * 0.05);
+    const c1y = sY + Math.round(boxH * (vw < 600 ? 0.10 : 0.14));
+    const c2x = Math.round((sX + eX) / 2);
+    const c2y = eY - Math.round(boxH * (vw < 600 ? 0.08 : 0.12));
     const d = `M ${sX} ${sY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${eX} ${eY}`;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('class','connector');
-    svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+    svg.setAttribute('viewBox', `0 0 ${boxW} ${boxH}`);
+    svg.setAttribute('width', String(boxW));
+    svg.setAttribute('height', String(boxH));
+    svg.style.left = '0px';
+    svg.style.top = `${boxTop}px`;
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d', d);
     path.setAttribute('fill','none');
