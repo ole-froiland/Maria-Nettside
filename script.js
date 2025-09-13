@@ -43,6 +43,15 @@
     });
   }, {threshold: 0.12, rootMargin: '0px 0px -10% 0px'});
 
+  // Ensure #info list items reveal one-by-one
+  const infoList = document.querySelector('#info .list');
+  if(infoList){
+    infoList.querySelectorAll('li').forEach(li=>{
+      li.classList.add('reveal');
+      li.setAttribute('data-reveal','');
+    });
+  }
+
   document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
 
 
