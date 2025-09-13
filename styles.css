@@ -292,7 +292,7 @@ h1:hover{background-position:200% 0}
 #min-anchor::after{ content:none !important; }
 
 /* --- Year Timeline (inside #info) --- */
-#year-timeline{margin-top: clamp(180px, 20vw, 360px)}
+#year-timeline{margin-top: clamp(120px, 12vw, 220px)}
 #year-timeline .year-hero{
   position:sticky; top:52vh; z-index:1;
   font-weight:900; letter-spacing:.02em;
@@ -302,5 +302,5 @@ h1:hover{background-position:200% 0}
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
 #year-timeline .year-track{position:relative;display:block}
-#year-timeline .year-marker{height:60vh}
-@media (max-width:640px){#year-timeline .year-marker{height:52vh}}
+#year-timeline .year-marker{height:36vh}
+@media (max-width:640px){#year-timeline .year-marker{height:32vh}}

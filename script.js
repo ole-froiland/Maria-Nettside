@@ -211,7 +211,18 @@
             if(isSnapping) { we.preventDefault(); return; }
             const dy = we.deltaY || 0;
             if(Math.abs(dy) < 1) return; // ignore tiny/noise
-            if(dy <= 0) return; // only allow moving forward in years
+            if(dy <= 0){
+              // quick escape upwards to the Info section
+              const info = document.getElementById('info');
+              if(info){
+                we.preventDefault();
+                isSnapping = true;
+                const top = Math.max(0, info.offsetTop - 12);
+                window.scrollTo({ top, behavior: 'smooth' });
+                setTimeout(()=>{ isSnapping = false; compute(); }, 420);
+              }
+              return;
+            }
             const i = getActiveIndex();
             const next = Math.min(i+1, markers.length-1);
             if(next !== i){
@@ -233,7 +244,16 @@
             const endY = (te.changedTouches?.[0]?.clientY) || touchStartY;
             const dy = touchStartY - endY; // positive means swipe up -> scroll down
             if(Math.abs(dy) < 12) return; // small move: ignore
-            if(dy <= 0) return; // only allow moving forward in years
+            if(dy <= 0){
+              const info = document.getElementById('info');
+              if(info){
+                isSnapping = true;
+                const top = Math.max(0, info.offsetTop - 12);
+                window.scrollTo({ top, behavior: 'smooth' });
+                setTimeout(()=>{ isSnapping = false; compute(); }, 420);
+              }
+              return;
+            }
             const i = getActiveIndex();
             const next = Math.min(i+1, markers.length-1);
             if(next !== i){
