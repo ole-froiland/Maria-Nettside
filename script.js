@@ -303,29 +303,35 @@
     const heroRect = hero.getBoundingClientRect();
     // Section width (W) and vertical distance (H)
     const W = Math.max(1, Math.round(heroRect.width));
-    const sx = Math.round(r.right - heroRect.left);
-    const syViewport = Math.round(r.bottom + 6); // +6px down from baseline
-    // Info bottom (viewport coords)
-    const lastItem = document.querySelector('#info .list li:last-child');
+    // Start immediately after 'min': +8px right, +2px down from its bottom
+    const sxViewport = Math.round(r.right + 8);
+    const syViewport = Math.round(r.bottom + 2);
+    // Measure Info block
     const infoEl = document.getElementById('info');
-    const tRect = (lastItem || infoEl)?.getBoundingClientRect();
-    const infoBottomV = tRect ? Math.round(tRect.bottom) : Math.round(window.innerHeight * 0.9);
-    const endOffsetY = (window.innerWidth < 600) ? 28 : 36; // 24–40px
-    const eyViewport = infoBottomV + endOffsetY;
-    // Build local SVG box: top aligned to sy, height H to ey + padding
-    const topOffset = syViewport - heroRect.top; // place SVG here
+    const infoRect = infoEl?.getBoundingClientRect();
+    if(!infoRect) return;
+    // Right-edge target around 35% down the info block
+    const rxViewport = Math.round(infoRect.right + 16);
+    const ryViewport = Math.round(infoRect.top + infoRect.height * 0.35);
+    // Under-text end toward lower-left under bullets
+    const exViewport = Math.round(infoRect.left + infoRect.width * 0.85);
+    const eyViewport = Math.round(infoRect.bottom + 28);
+    // Local SVG box anchored at syViewport
+    const topOffset = syViewport - heroRect.top;
     const H = Math.max(60, eyViewport - syViewport + 80);
-    // End x within section: ~12–16vw from left edge of section
-    const endFrac = (window.innerWidth < 640) ? 0.18 : 0.14; // responsive tweak
-    const ex = Math.round(W * endFrac);
-    const ey = Math.round(eyViewport - syViewport); // local within SVG
-    const sxLocal = sx; const syLocal = 0;
-    // Cubic Bezier per spec
-    const c1x = Math.round(sxLocal + 0.22 * W);
-    const c1y = Math.round(syLocal + 0.08 * H);
-    const c2x = Math.round(ex - 0.18 * W);
-    const c2y = Math.round(syLocal + 0.62 * H);
-    const d = `M ${sxLocal} ${syLocal} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${ex} ${ey}`;
+    // Convert to hero-local SVG coords
+    const sx = Math.round(sxViewport - heroRect.left);
+    const sy = 0; // since SVG top aligns at syViewport
+    const rx = Math.round(rxViewport - heroRect.left);
+    const ry = Math.round(ryViewport - syViewport);
+    const ex = Math.round(exViewport - heroRect.left);
+    const ey = Math.round(eyViewport - syViewport);
+    // Cubic Bezier: M sx sy C (sx + 0.18W, sy + 0.06H) (rx, ry) (ex, ey)
+    const c1x = Math.round(sx + 0.18 * W);
+    const c1y = Math.round(sy + 0.06 * H);
+    const c2x = rx;
+    const c2y = ry;
+    const d = `M ${sx} ${sy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${ex} ${ey}`;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('class','connector');
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -336,7 +342,7 @@
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d', d);
     path.setAttribute('fill','none');
-    path.setAttribute('stroke','var(--brand)');
+    path.setAttribute('stroke','var(--accent-blue)');
     path.setAttribute('stroke-linecap','round');
     path.setAttribute('stroke-width','3');
     path.setAttribute('class','curve-path');
