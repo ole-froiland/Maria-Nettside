@@ -292,9 +292,9 @@ h1:hover{background-position:200% 0}
 #min-anchor::after{ content:none !important; }
 
 /* --- Year Timeline (inside #info) --- */
-#year-timeline{margin-top: clamp(72px, 12vw, 180px)}
+#year-timeline{margin-top: clamp(120px, 16vw, 240px)}
 #year-timeline .year-hero{
-  position:sticky; top:30vh; z-index:1;
+  position:sticky; top:40vh; z-index:1;
   font-weight:900; letter-spacing:.02em;
   font-size:clamp(3rem, 18vw, 12rem);
   line-height:1; margin:0 0 8vh;
