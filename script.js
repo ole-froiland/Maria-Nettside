@@ -249,7 +249,7 @@
           if(container.__touchEnd){ container.removeEventListener('touchend', container.__touchEnd); container.__touchEnd = null; }
         }
       });
-    }, {root:null, threshold:0, rootMargin:'-10% 0px -10% 0px'});
+    }, {root:null, threshold:0, rootMargin:'40% 0px 40% 0px'});
 
     initIO.observe(container);
     // Set initial value
