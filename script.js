@@ -277,97 +277,106 @@
   }
 
   function drawHeroCurve(){
-    // remove previous connector(s)
+    // Fjern tidligere linje
     document.querySelectorAll('#hero .connector').forEach(n=>n.remove());
+
     const anchor = document.getElementById('min-anchor');
-    if(!anchor) return;
-    // Find precise rect of the last character 'n' in 'min'
-    const textNode = anchor.firstChild;
-    if(!(textNode && textNode.nodeType === 3)) return;
-    const t = textNode.textContent || '';
-    const nIdx = Math.max(0, t.length - 1);
-    const range = document.createRange();
-    range.setStart(textNode, nIdx);
-    range.setEnd(textNode, nIdx + 1);
-    const r = range.getClientRects()[0] || anchor.getBoundingClientRect();
-    const startX = Math.round(r.right);
-    const startY = Math.round(r.bottom + 5); // slightly below baseline
-    const container = document.querySelector('main.container');
-    if(!container) return;
-    const cRect = container.getBoundingClientRect();
-    const contW = Math.round(cRect.width);
-    const contLeft = cRect.left;
-    // Place inside hero; compute points in hero-local coords, but SVG uses viewport box
-    const hero = document.getElementById('hero');
-    if(!hero) return;
-    const heroRect = hero.getBoundingClientRect();
-    const W = Math.max(1, Math.round(heroRect.width));
-    // Start after 'min': +14px right, +6px down
-    const sxViewport = Math.round(r.right + 14);
-    const syViewport = Math.round(r.bottom + 6);
-    // Measure Info and Avatar
-    const infoEl = document.getElementById('info');
-    const infoRect = infoEl?.getBoundingClientRect();
-    if(!infoRect) return;
+    const hero   = document.getElementById('hero');
+    const info   = document.getElementById('info');
     const avatar = document.querySelector('.hero-avatar');
+    if(!anchor || !hero || !info) return;
+
+    // Finn eksakt posisjon for siste bokstav "n" i "min"
+    const node = anchor.firstChild;
+    const range = document.createRange();
+    range.setStart(node, Math.max(0, (node.textContent||'').length - 1));
+    range.setEnd(node,   Math.max(1, (node.textContent||'').length));
+    const nRect      = range.getClientRects()[0] || anchor.getBoundingClientRect();
+    const heroRect   = hero.getBoundingClientRect();
+    const infoRect   = info.getBoundingClientRect();
     const avatarRect = avatar?.getBoundingClientRect();
-    // Right-edge routing control near avatar but safely away
-    let cxViewport = avatarRect ? Math.round(avatarRect.left - 40) : Math.round(infoRect.right + 16);
-    let cyViewport = Math.round(Math.min(infoRect.top - 12, avatarRect ? (avatarRect.top + avatarRect.height * 0.15) : infoRect.top));
-    // End under Info
-    const exViewport = Math.round(infoRect.left + infoRect.width * 0.85);
-    const eyViewport = Math.round(infoRect.bottom + 28);
-    // Local SVG box anchored at syViewport (top of SVG aligns with start y)
-    const topOffset = syViewport - heroRect.top;
-    const H = Math.max(60, eyViewport - syViewport + 80);
-    // Convert to hero-local SVG coords
-    const sx = Math.round(sxViewport - heroRect.left);
-    const sy = 0;
-    let cx = Math.round(cxViewport - heroRect.left);
-    let cy = Math.round(cyViewport - syViewport);
-    const ex = Math.round(exViewport - heroRect.left);
-    const ey = Math.round(eyViewport - syViewport);
-    // First control: small forward glide from start
-    let c1x = Math.round(sx + 120);
-    let c1y = Math.round(sy + 12);
-    // Safety: keep control points outside inflated avatar circle (r + 32px)
+
+    // Start like etter "min"
+    const sxV = nRect.right + 14;   // litt frem
+    const syV = nRect.bottom + 6;   // litt ned
+
+    // Mål for slutt: under info (midt mot høyre)
+    const exV = infoRect.left + infoRect.width * 0.65;
+    const eyV = infoRect.bottom + 32;
+
+    // Waypoint for å styre rundt høyre kant av info
+    const rxV = infoRect.right + 24;
+    const ryV = infoRect.top + infoRect.height * 0.35;
+
+    // Første kontrollpunkt: myk gli fremover fra start
+    let c1xV = sxV + 120;
+    let c1yV = syV + 12;
+
+    // Andre kontrollpunkt: mot høyre kant av info
+    let c2xV = rxV;
+    let c2yV = ryV;
+
+    // Hold trygg avstand til portrettet (sikkerhetsmargin)
+    const SAFE = 36;
     if(avatarRect){
-      const ax = avatarRect.left + avatarRect.width/2 - heroRect.left;
-      const ay = avatarRect.top + avatarRect.height/2 - syViewport;
-      const ar = (avatarRect.width/2) + 32;
-      const keepAway = (px, py)=>{
-        const dx = px - ax; const dy = py - ay; const d = Math.hypot(dx, dy) || 1;
+      const ax = avatarRect.left + avatarRect.width/2;
+      const ay = avatarRect.top  + avatarRect.height/2;
+      const ar = avatarRect.width/2 + SAFE;
+      const pushAway = (px, py)=>{
+        const dx = px - ax, dy = py - ay;
+        const d  = Math.hypot(dx, dy) || 1;
         if(d < ar){ const s = ar / d; return [ax + dx*s, ay + dy*s]; }
         return [px, py];
       };
-      [c1x, c1y] = keepAway(c1x, c1y);
-      [cx, cy] = keepAway(cx, cy);
+      [c1xV, c1yV] = pushAway(c1xV, c1yV);
+      [c2xV, c2yV] = pushAway(c2xV, c2yV);
     }
-    // Build path: M sx sy C (c1x c1y) (cx cy) (ex ey)
-    const d = `M ${sx} ${sy} C ${c1x} ${c1y}, ${cx} ${cy}, ${ex} ${ey}`;
-    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('class','connector');
+
+    // Plasser SVG lokalt i hero
+    const topOffset = syV - heroRect.top;
+    const W = Math.max(1, Math.round(heroRect.width));
+    const H = Math.max(80, Math.round((eyV - syV) + 80));
+
+    // Konverter til hero-lokale koordinater
+    const toLocalX = v => Math.round(v - heroRect.left);
+    const toLocalY = v => Math.round(v - syV);
+
+    const sx = toLocalX(sxV), sy = 0;
+    const c1x = toLocalX(c1xV), c1y = toLocalY(c1yV);
+    const c2x = toLocalX(c2xV), c2y = toLocalY(c2yV);
+    const ex  = toLocalX(exV),  ey  = toLocalY(eyV);
+
+    // Bygg fin S-kurve: M -> C(c1) -> (c2) -> end
+    const d = `M ${sx} ${sy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${ex} ${ey}`;
+
+    const svg  = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.classList.add('connector');
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    svg.setAttribute('width', String(W));
+    svg.setAttribute('width',  String(W));
     svg.setAttribute('height', String(H));
-    svg.style.left = '0px';
-    svg.style.top = `${topOffset}px`;
+    svg.style.position = 'absolute';
+    svg.style.left = '0';
+    svg.style.top  = `${topOffset}px`;
+    svg.style.pointerEvents = 'none';
+    svg.style.zIndex = '0';
+
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d', d);
     path.setAttribute('fill','none');
     path.setAttribute('stroke','var(--accent-blue)');
-    path.setAttribute('stroke-linecap','round');
     path.setAttribute('stroke-width','3');
-    path.setAttribute('class','curve-path');
+    path.setAttribute('stroke-linecap','round');
+    path.classList.add('curve-path');
+
     svg.appendChild(path);
     hero.appendChild(svg);
-    // dash setup and animation (forward only)
+
+    // Tegn én gang fremover, stopp
     const len = path.getTotalLength();
     path.style.strokeDasharray = String(len);
-    if(prefersReduced){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
       path.style.strokeDashoffset = '0';
-      path.style.animation = 'none';
-    } else {
+    }else{
       path.style.strokeDashoffset = String(len);
       path.style.setProperty('--plen', String(len));
       path.style.animation = 'curveDrawOnce 1.8s ease-in-out forwards';
