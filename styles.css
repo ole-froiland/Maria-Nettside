@@ -288,5 +288,5 @@ h1:hover{background-position:200% 0}
 }
 
 /* Ensure no underline/artifact on the 'min' anchor */
-#min-anchor{ text-decoration:none !important; background-image:none !important; }
+#min-anchor{ text-decoration:none !important; }
 #min-anchor::after{ content:none !important; }
