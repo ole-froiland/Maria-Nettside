@@ -301,37 +301,50 @@
     const hero = document.getElementById('hero');
     if(!hero) return;
     const heroRect = hero.getBoundingClientRect();
-    // Section width (W) and vertical distance (H)
     const W = Math.max(1, Math.round(heroRect.width));
-    // Start immediately after 'min': +8px right, +2px down from its bottom
-    const sxViewport = Math.round(r.right + 8);
-    const syViewport = Math.round(r.bottom + 2);
-    // Measure Info block
+    // Start after 'min': +14px right, +6px down
+    const sxViewport = Math.round(r.right + 14);
+    const syViewport = Math.round(r.bottom + 6);
+    // Measure Info and Avatar
     const infoEl = document.getElementById('info');
     const infoRect = infoEl?.getBoundingClientRect();
     if(!infoRect) return;
-    // Right-edge target around 35% down the info block
-    const rxViewport = Math.round(infoRect.right + 16);
-    const ryViewport = Math.round(infoRect.top + infoRect.height * 0.35);
-    // Under-text end toward lower-left under bullets
+    const avatar = document.querySelector('.hero-avatar');
+    const avatarRect = avatar?.getBoundingClientRect();
+    // Right-edge routing control near avatar but safely away
+    let cxViewport = avatarRect ? Math.round(avatarRect.left - 40) : Math.round(infoRect.right + 16);
+    let cyViewport = Math.round(Math.min(infoRect.top - 12, avatarRect ? (avatarRect.top + avatarRect.height * 0.15) : infoRect.top));
+    // End under Info
     const exViewport = Math.round(infoRect.left + infoRect.width * 0.85);
     const eyViewport = Math.round(infoRect.bottom + 28);
-    // Local SVG box anchored at syViewport
+    // Local SVG box anchored at syViewport (top of SVG aligns with start y)
     const topOffset = syViewport - heroRect.top;
     const H = Math.max(60, eyViewport - syViewport + 80);
     // Convert to hero-local SVG coords
     const sx = Math.round(sxViewport - heroRect.left);
-    const sy = 0; // since SVG top aligns at syViewport
-    const rx = Math.round(rxViewport - heroRect.left);
-    const ry = Math.round(ryViewport - syViewport);
+    const sy = 0;
+    let cx = Math.round(cxViewport - heroRect.left);
+    let cy = Math.round(cyViewport - syViewport);
     const ex = Math.round(exViewport - heroRect.left);
     const ey = Math.round(eyViewport - syViewport);
-    // Cubic Bezier: M sx sy C (sx + 0.18W, sy + 0.06H) (rx, ry) (ex, ey)
-    const c1x = Math.round(sx + 0.18 * W);
-    const c1y = Math.round(sy + 0.06 * H);
-    const c2x = rx;
-    const c2y = ry;
-    const d = `M ${sx} ${sy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${ex} ${ey}`;
+    // First control: small forward glide from start
+    let c1x = Math.round(sx + 120);
+    let c1y = Math.round(sy + 12);
+    // Safety: keep control points outside inflated avatar circle (r + 32px)
+    if(avatarRect){
+      const ax = avatarRect.left + avatarRect.width/2 - heroRect.left;
+      const ay = avatarRect.top + avatarRect.height/2 - syViewport;
+      const ar = (avatarRect.width/2) + 32;
+      const keepAway = (px, py)=>{
+        const dx = px - ax; const dy = py - ay; const d = Math.hypot(dx, dy) || 1;
+        if(d < ar){ const s = ar / d; return [ax + dx*s, ay + dy*s]; }
+        return [px, py];
+      };
+      [c1x, c1y] = keepAway(c1x, c1y);
+      [cx, cy] = keepAway(cx, cy);
+    }
+    // Build path: M sx sy C (c1x c1y) (cx cy) (ex ey)
+    const d = `M ${sx} ${sy} C ${c1x} ${c1y}, ${cx} ${cy}, ${ex} ${ey}`;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('class','connector');
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
