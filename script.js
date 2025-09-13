@@ -141,9 +141,8 @@
     const firstYear = Math.min(...years);
     const lastYear = Math.max(...years);
 
-    let lastShown = null;        // last year shown in hero (snapped)
+    let lastShown = null;        // last year shown in hero
     let ticking = false;
-    let isSnapping = false;      // lock while animating to next/prev
 
     const setHero = (y)=>{ hero.textContent = String(y); };
 
@@ -159,43 +158,13 @@
         if(!Number.isNaN(my) && d < best.d){ best = {d, y: my}; }
       });
       const y = best.y;
-      const nextY = (lastShown == null) ? y : Math.max(lastShown, y);
-      if(nextY !== lastShown){ setHero(nextY); lastShown = nextY; }
+      if(y !== lastShown){ setHero(y); lastShown = y; }
 
       ticking = false;
     };
 
     const onScroll = ()=>{
       if(!ticking){ ticking = true; requestAnimationFrame(compute); }
-    };
-
-    // Helper: index of marker closest to viewport center
-    const getActiveIndex = () => {
-      const vhCenter = (window.innerHeight || document.documentElement.clientHeight) / 2;
-      let bestI = 0; let bestD = Infinity;
-      markers.forEach((m, i)=>{
-        const r = m.getBoundingClientRect();
-        const c = r.top + r.height/2;
-        const d = Math.abs(c - vhCenter);
-        if(d < bestD){ bestD = d; bestI = i; }
-      });
-      return bestI;
-    };
-
-    // Smoothly scroll so target marker center aligns to viewport center
-    const snapToIndex = (idx)=>{
-      const m = markers[idx];
-      if(!m) return;
-      const r = m.getBoundingClientRect();
-      const currentY = window.scrollY || window.pageYOffset || 0;
-      const targetCenterY = currentY + r.top + r.height/2;
-      const viewportCenterY = currentY + (window.innerHeight || document.documentElement.clientHeight)/2;
-      const delta = targetCenterY - viewportCenterY;
-      if(Math.abs(delta) < 2) return; // already centered enough
-      isSnapping = true;
-      window.scrollTo({ top: currentY + delta, behavior: 'smooth' });
-      // unlock after a short duration; also compute to update year
-      setTimeout(()=>{ isSnapping = false; compute(); }, 520);
     };
 
     // Initialize and observe when container is near viewport to limit work
@@ -205,74 +174,13 @@
           window.addEventListener('scroll', onScroll, {passive:true});
           window.addEventListener('resize', compute);
           compute();
-          // Magnetic wheel navigation (only when timeline is in view)
-          const onWheel = (we)=>{
-            // If already snapping, ignore wheel to avoid stacking
-            if(isSnapping) { we.preventDefault(); return; }
-            const dy = we.deltaY || 0;
-            if(Math.abs(dy) < 1) return; // ignore tiny/noise
-            if(dy <= 0){
-              // quick escape upwards to the Info section
-              const info = document.getElementById('info');
-              if(info){
-                we.preventDefault();
-                isSnapping = true;
-                const top = Math.max(0, info.offsetTop - 12);
-                window.scrollTo({ top, behavior: 'smooth' });
-                setTimeout(()=>{ isSnapping = false; compute(); }, 420);
-              }
-              return;
-            }
-            const i = getActiveIndex();
-            const next = Math.min(i+1, markers.length-1);
-            if(next !== i){
-              we.preventDefault();
-              snapToIndex(next);
-            }
-            // else allow default scrolling to continue outside timeline
-          };
-          // attach to container so body scroll outside remains unaffected
-          container.__wheelHandler = onWheel;
-          container.addEventListener('wheel', onWheel, {passive:false});
-
-          // Touch (swipe) navigation
-          let touchStartY = 0; let touchActive = false;
-          const onTouchStart = (te)=>{ touchActive = true; touchStartY = te.touches?.[0]?.clientY || 0; };
-          const onTouchEnd = (te)=>{
-            if(!touchActive || isSnapping) return;
-            touchActive = false;
-            const endY = (te.changedTouches?.[0]?.clientY) || touchStartY;
-            const dy = touchStartY - endY; // positive means swipe up -> scroll down
-            if(Math.abs(dy) < 12) return; // small move: ignore
-            if(dy <= 0){
-              const info = document.getElementById('info');
-              if(info){
-                isSnapping = true;
-                const top = Math.max(0, info.offsetTop - 12);
-                window.scrollTo({ top, behavior: 'smooth' });
-                setTimeout(()=>{ isSnapping = false; compute(); }, 420);
-              }
-              return;
-            }
-            const i = getActiveIndex();
-            const next = Math.min(i+1, markers.length-1);
-            if(next !== i){
-              snapToIndex(next);
-            }
-          };
-          container.__touchStart = onTouchStart;
-          container.__touchEnd = onTouchEnd;
-          container.addEventListener('touchstart', onTouchStart, {passive:true});
-          container.addEventListener('touchend', onTouchEnd, {passive:true});
+          // No custom wheel/touch snapping — rely on natural page scroll
         } else {
           window.removeEventListener('scroll', onScroll);
           window.removeEventListener('resize', compute);
-          if(container.__wheelHandler){ container.removeEventListener('wheel', container.__wheelHandler); container.__wheelHandler = null; }
-          if(container.__touchStart){ container.removeEventListener('touchstart', container.__touchStart); container.__touchStart = null; }
-          if(container.__touchEnd){ container.removeEventListener('touchend', container.__touchEnd); container.__touchEnd = null; }
         }
       });
-    }, {root:null, threshold:0, rootMargin:'40% 0px 40% 0px'});
+    }, {root:null, threshold:0, rootMargin:'0px 0px 0px 0px'});
 
     initIO.observe(container);
     // Set initial value
