@@ -272,12 +272,14 @@ h1:hover{background-position:200% 0}
 .cv-view object{width:100%;height:min(80vh, 900px);display:block}
 @media (max-width:640px){.cv-view object{height:70vh}}
 
-/* --- Info (open style to match hero) --- */
+/* --- Info + Erfaringsboks (åpen stil) --- */
 #info.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(72px, 12vw, 180px) 0}
 #info.panel::before, #info.panel::after{display:none !important}
-#info h2{font-size:clamp(2rem, 1.2rem + 3vw, 3rem);margin:0 0 .5rem}
-#info .list{gap:10px;max-width:68ch}
-#info .list li{font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);font-weight:400;line-height:1.6;color:var(--fg);letter-spacing:0}
+#exp-box.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:12px 0}
+#exp-box.panel::before, #exp-box.panel::after{display:none !important}
+#info h2, #exp-box h2{font-size:clamp(2rem, 1.2rem + 3vw, 3rem);margin:0 0 .5rem}
+#info .list, #exp-box .list{gap:10px;max-width:68ch}
+#info .list li, #exp-box .list li{font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);font-weight:400;line-height:1.6;color:var(--fg);letter-spacing:0}
 #info .list .accent{color:var(--accent-blue)}
 /* Hero connector defaults (ensure layering and non-interactive) */
 #hero{position:relative}
@@ -293,11 +295,6 @@ h1:hover{background-position:200% 0}
 
 /* (Removed) Year Timeline in #info to avoid duplicate year headings */
 
-/* --- Erfaringsboks (kompakt kort-grid) --- */
-#exp-box .cards{display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px}
-#exp-box .card{border:1px solid var(--stroke);border-radius:12px;padding:12px;background:linear-gradient(var(--panel), var(--panel)) padding-box, linear-gradient(120deg, color-mix(in oklab, var(--teal) 25%, transparent), color-mix(in oklab, var(--sky) 20%, transparent)) border-box;box-shadow:var(--shadow)}
-#exp-box .card h3{margin:0 0 .25rem;font-size:1.05rem}
-#exp-box .card .meta{display:inline-block;margin-top:.25rem;color:var(--muted);font-size:.9rem}
-@media(min-width:720px){#exp-box .cards{grid-template-columns:repeat(3,1fr)}}
+/* (Removed) Erfaringsboks kort-grid */
 
 /* (Removed) Vertical Timeline (full-screen snap) */
