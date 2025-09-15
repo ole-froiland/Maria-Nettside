@@ -293,12 +293,4 @@ h1:hover{background-position:200% 0}
 
 /* (Removed) Year Timeline in #info to avoid duplicate year headings */
 
-/* --- Vertical Timeline (full-screen snap) --- */
-#timeline{height:100vh;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;position:relative}
-#timeline .panel{height:100vh;display:grid;place-items:center;scroll-snap-align:start;margin:0;border:0;border-radius:0;padding:0;background:transparent;box-shadow:none}
-#timeline .panel h1{font-size:clamp(5rem,14vw,14rem);font-weight:800;letter-spacing:-.02em;transform:translateY(12px);opacity:.0;transition:transform .6s ease,opacity .6s ease}
-#timeline .panel.in h1{transform:translateY(0);opacity:1}
-@media (prefers-reduced-motion: reduce){
-  #timeline{scroll-behavior:auto}
-  #timeline .panel h1{transition:none;transform:none;opacity:1}
-}
+/* (Removed) Vertical Timeline (full-screen snap) */

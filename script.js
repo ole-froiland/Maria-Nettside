@@ -130,48 +130,7 @@
   // (Removed) Old #year-timeline logic to avoid duplicate year headings
 
 
-  // --- Vertical Timeline (5 full-screen pages + one-way exit) ---
-  (function initVerticalTimeline(){
-    const tl = document.getElementById('timeline');
-    if(!tl) return;
-    const panels = Array.from(tl.querySelectorAll('.panel'));
-    if(!panels.length) return;
-    const last = panels[panels.length - 1];
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    let isSnapOn = true;
-    const setSnap = (on)=>{ tl.style.scrollSnapType = on ? 'y mandatory' : 'none'; isSnapOn = !!on; };
-    setSnap(true);
-
-    // Reveal effect when panel ≥30% visible within timeline
-    const revealIO = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); /* reveal */ } });
-    }, {root: tl, threshold: 0.3});
-    panels.forEach(p=>revealIO.observe(p));
-
-    // One-way exit at last panel when fully visible and user scrolls further down
-    const exitIO = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if(e.target === last && e.isIntersecting && e.intersectionRatio === 1){
-          const once = (ev)=>{
-            if(ev.deltaY > 0){
-              setSnap(false);
-              const info = document.querySelector('#info');
-              if(info){
-                const behavior = prefersReduced ? 'auto' : 'smooth';
-                requestAnimationFrame(()=> info.scrollIntoView({behavior}));
-              }
-            }
-          };
-          tl.addEventListener('wheel', once, {passive:true, once:true});
-        }
-      });
-    }, {root: tl, threshold: 1.0});
-    exitIO.observe(last);
-
-    // Re-enable snap once the user starts scrolling the timeline again
-    tl.addEventListener('scroll', ()=>{ if(!isSnapOn) setSnap(true); }, {passive:true});
-  })();
+  // (Removed) Vertical Timeline
 
 
   // --- i18n (NO / EN) ---
