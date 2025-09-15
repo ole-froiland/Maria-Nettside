@@ -278,29 +278,11 @@ h1:hover{background-position:200% 0}
 /* --- Info + Erfaringsboks (åpen stil) --- */
 #info.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(72px, 12vw, 180px) 0}
 #info.panel::before, #info.panel::after{display:none !important}
-#exp-box.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(72px, 12vw, 180px) 0}
-#exp-box.panel::before, #exp-box.panel::after{display:none !important}
-#info h2, #exp-box h2{font-size:clamp(2rem, 1.2rem + 3vw, 3rem);margin:0 0 .5rem}
-#info .list, #exp-box .list{gap:10px;max-width:68ch}
-#info .list li, #exp-box .list li{font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);font-weight:400;line-height:1.6;color:var(--fg);letter-spacing:0}
+/* Info typography (explicit, since exp-box removed) */
+#info h2{font-size:clamp(2rem, 1.2rem + 3vw, 3rem);margin:0 0 .5rem}
+#info .list{gap:10px;max-width:68ch}
+#info .list li{font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);font-weight:400;line-height:1.6;color:var(--fg);letter-spacing:0}
 #info .list .accent{color:var(--accent-blue)}
-/* chips spacing inside exp-box list items */
-#exp-box .list .chips{margin-top:12px}
-/* limit width of experience box */
-#exp-box{max-width:720px;margin-left:auto;margin-right:auto}
-/* connector line between first and second exp items */
-#exp-box .connect-line{position:absolute;width:2px;background:var(--brand);border-radius:1px;pointer-events:none;z-index:0}
-/* title typography for experience box matches #info */
-
-/* --- Exp-box item frames + dividers (transparent with thin blue border) --- */
-#exp-box .list > li{background:transparent;border:0;border-radius:0;padding:12px 16px;margin:16px 0;position:relative;box-shadow:none}
-/* optional very subtle fill if needed: */
-/* #exp-box .list li{background:rgba(247,251,255,0.6)} */
-/* divider between items (full width inside section) */
-#exp-box .list > li+li::before{content:"";position:absolute;top:-16px;left:-16px;right:-16px;height:1px;background:#E6E9EE}
-/* Chips inside exp-box: light blue, no border */
-#exp-box .chips{gap:10px}
-#exp-box .chips li{background:#EAF6FF !important;border:0 !important;border-radius:10px !important;padding:8px 12px !important;font-size:16px}
 /* Hero connector defaults (ensure layering and non-interactive) */
 #hero{position:relative}
 #hero .connector{position:absolute;left:0;pointer-events:none;z-index:0;top:auto;right:auto;bottom:auto}
