@@ -52,6 +52,15 @@
     });
   }
 
+  // Ensure #experience items reveal one-by-one
+  const expTimeline = document.querySelector('#experience .timeline');
+  if(expTimeline){
+    expTimeline.querySelectorAll('.t-item').forEach(li=>{
+      li.classList.add('reveal');
+      li.setAttribute('data-reveal','');
+    });
+  }
+
   document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
 
 
