@@ -306,3 +306,6 @@ h1:hover{background-position:200% 0}
 /* (Removed) Erfaringsboks kort-grid */
 
 /* (Removed) Vertical Timeline (full-screen snap) */
+
+/* Override: Erfaring timeline titles not bold */
+#erfaring .t-head h3{font-weight:400}
