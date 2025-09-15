@@ -281,6 +281,8 @@ h1:hover{background-position:200% 0}
 #info .list, #exp-box .list{gap:10px;max-width:68ch}
 #info .list li, #exp-box .list li{font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);font-weight:400;line-height:1.6;color:var(--fg);letter-spacing:0}
 #info .list .accent{color:var(--accent-blue)}
+/* chips spacing inside exp-box list items */
+#exp-box .list .chips{margin-top:6px}
 /* Hero connector defaults (ensure layering and non-interactive) */
 #hero{position:relative}
 #hero .connector{position:absolute;left:0;pointer-events:none;z-index:0;top:auto;right:auto;bottom:auto}
