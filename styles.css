@@ -293,4 +293,11 @@ h1:hover{background-position:200% 0}
 
 /* (Removed) Year Timeline in #info to avoid duplicate year headings */
 
+/* --- Erfaringsboks (kompakt kort-grid) --- */
+#exp-box .cards{display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px}
+#exp-box .card{border:1px solid var(--stroke);border-radius:12px;padding:12px;background:linear-gradient(var(--panel), var(--panel)) padding-box, linear-gradient(120deg, color-mix(in oklab, var(--teal) 25%, transparent), color-mix(in oklab, var(--sky) 20%, transparent)) border-box;box-shadow:var(--shadow)}
+#exp-box .card h3{margin:0 0 .25rem;font-size:1.05rem}
+#exp-box .card .meta{display:inline-block;margin-top:.25rem;color:var(--muted);font-size:.9rem}
+@media(min-width:720px){#exp-box .cards{grid-template-columns:repeat(3,1fr)}}
+
 /* (Removed) Vertical Timeline (full-screen snap) */
