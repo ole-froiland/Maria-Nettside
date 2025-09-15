@@ -151,9 +151,12 @@ footer.site{padding:12px 0}
 .avatar-img:hover{transform:translateY(-2px) scale(1.02)}
 
 /* --- Timeline --- */
-.timeline{list-style:none;padding:0;margin:8px 0 0;border-left:3px solid var(--brand)}
+.timeline{list-style:none;padding:0;margin:8px 0 0}
 .t-item{position:relative;margin:0 0 18px 16px;padding-left:14px}
 .t-item::before{content:'';position:absolute;left:-22px;top:.3rem;width:14px;height:14px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px rgba(14,165,233,.22)}
+/* connecting line segment from this point down to the next */
+.t-item::after{content:'';position:absolute;left:-15px; /* center of dot */ top:calc(.3rem + 14px);bottom:-18px;width:3px;background:var(--brand)}
+.t-item:last-child::after{display:none}
 .t-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
 .t-desc{margin:.25rem 0 .5rem;color:var(--muted)}
 
