@@ -288,6 +288,8 @@ h1:hover{background-position:200% 0}
 #exp-box .list .chips{margin-top:12px}
 /* limit width of experience box */
 #exp-box{max-width:720px;margin-left:auto;margin-right:auto}
+/* connector line between first and second exp items */
+#exp-box .connect-line{position:absolute;width:2px;background:var(--brand);border-radius:1px;pointer-events:none;z-index:0}
 /* title typography for experience box matches #info */
 
 /* --- Exp-box item frames + dividers (transparent with thin blue border) --- */

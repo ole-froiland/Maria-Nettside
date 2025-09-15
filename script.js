@@ -26,6 +26,7 @@
   // Mark page as loaded for subtle entrance
   window.addEventListener('DOMContentLoaded', ()=>{
     body.classList.add('loaded');
+    drawExpBoxConnector();
   });
 
   // Scroll reveal
@@ -316,6 +317,7 @@
     if(w !== lastW){
       lastW = w;
       drawHeroCurve();
+      drawExpBoxConnector();
     }
   });
   // initial typing handled via applyLang
@@ -375,5 +377,40 @@
       isOpen ? close() : open();
     });
   })();
+
+  // Draw vertical connector line between first and second items in #exp-box
+  function drawExpBoxConnector(){
+    const box = document.getElementById('exp-box');
+    if(!box) return;
+    const list = box.querySelector('.list');
+    if(!list) return;
+    const items = list.querySelectorAll(':scope > li');
+    if(items.length < 2) return;
+    let line = box.querySelector('.connect-line');
+    if(!line){
+      line = document.createElement('div');
+      line.className = 'connect-line';
+      box.appendChild(line);
+    }
+    const first = items[0];
+    const second = items[1];
+    const rBox = box.getBoundingClientRect();
+    const r1 = first.getBoundingClientRect();
+    const r2 = second.getBoundingClientRect();
+    const cs1 = getComputedStyle(first);
+    const pt1 = parseFloat(cs1.paddingTop || '0');
+    const lh1 = parseFloat(cs1.lineHeight || '0') || 20;
+    const x = r1.left + 8 - rBox.left; // near the bullet
+    const y1 = r1.top + pt1 + (lh1 * 0.5) - rBox.top;
+    const cs2 = getComputedStyle(second);
+    const pt2 = parseFloat(cs2.paddingTop || '0');
+    const lh2 = parseFloat(cs2.lineHeight || '0') || 20;
+    const y2 = r2.top + pt2 + (lh2 * 0.5) - rBox.top;
+    const top = Math.min(y1, y2);
+    const h = Math.abs(y2 - y1);
+    line.style.left = x + 'px';
+    line.style.top = top + 'px';
+    line.style.height = h + 'px';
+  }
 
 })();
