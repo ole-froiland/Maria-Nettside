@@ -9,10 +9,10 @@ type Experience = {
 
 const EXPERIENCES: Experience[] = [
   {
-    role: 'Regnskapskonsulent',
-    company: 'Azets',
-    period: '2024–d.d.',
-    bullets: ['Bokføring', 'Rapportering og controlling', 'Kundeoppfølging'],
+    role: 'Salgsmedarbeider',
+    company: 'Peppes Pizza',
+    period: '2021–2022',
+    bullets: ['Kundeservice og bestillinger', 'Fokus på mersalg'],
   },
   {
     role: 'Salgsleder',
@@ -21,10 +21,10 @@ const EXPERIENCES: Experience[] = [
     bullets: ['Ledet 8–10 personer', 'Bemanning og opplæring', 'Rapportering'],
   },
   {
-    role: 'Salgsmedarbeider',
-    company: 'Peppes Pizza',
-    period: '2021–2022',
-    bullets: ['Kundeservice og bestillinger', 'Fokus på mersalg'],
+    role: 'Regnskapskonsulent',
+    company: 'Azets',
+    period: '2024–d.d.',
+    bullets: ['Bokføring', 'Rapportering og controlling', 'Kundeoppfølging'],
   },
 ];
 
@@ -83,4 +83,3 @@ const ExperienceSection: React.FC = () => {
 };
 
 export default ExperienceSection;
-
