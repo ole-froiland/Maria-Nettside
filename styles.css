@@ -275,7 +275,7 @@ h1:hover{background-position:200% 0}
 /* --- Info + Erfaringsboks (åpen stil) --- */
 #info.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(72px, 12vw, 180px) 0}
 #info.panel::before, #info.panel::after{display:none !important}
-#exp-box.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:12px 0}
+#exp-box.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(72px, 12vw, 180px) 0}
 #exp-box.panel::before, #exp-box.panel::after{display:none !important}
 #info h2, #exp-box h2{font-size:clamp(2rem, 1.2rem + 3vw, 3rem);margin:0 0 .5rem}
 #info .list, #exp-box .list{gap:10px;max-width:68ch}
