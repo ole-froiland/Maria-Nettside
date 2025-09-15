@@ -275,6 +275,9 @@ h1:hover{background-position:200% 0}
 .cv-view object{width:100%;height:min(80vh, 900px);display:block}
 @media (max-width:640px){.cv-view object{height:70vh}}
 
+/* Add generous spacing between Info and Full CV */
+#full-cv.panel{margin-top:clamp(160px, 20vw, 360px)}
+
 /* --- Info + Erfaringsboks (åpen stil) --- */
 #info.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(72px, 12vw, 180px) 0}
 #info.panel::before, #info.panel::after{display:none !important}
