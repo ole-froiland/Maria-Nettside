@@ -286,8 +286,7 @@ h1:hover{background-position:200% 0}
 #info .list{gap:10px;max-width:68ch}
 #info .list li{font-size:clamp(1.125rem, 1rem + 1vw, 1.6rem);font-weight:400;line-height:1.6;color:var(--fg);letter-spacing:0}
 #info .list .accent{color:var(--accent-blue)}
-/* Match Info panel styling for Erfaring */
-#erfaring.panel{background:transparent;border:0;box-shadow:none;border-radius:18px;padding:clamp(16px, 4vw, 36px);margin:clamp(32px, 8vw, 80px) 0}
+/* (Erfaring is not a panel; inherits page background) */
 /* Hero connector defaults (ensure layering and non-interactive) */
 #hero{position:relative}
 #hero .connector{position:absolute;left:0;pointer-events:none;z-index:0;top:auto;right:auto;bottom:auto}
